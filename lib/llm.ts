@@ -17,13 +17,17 @@ export type RequirementsResult = {
   testScenarios?: string[];
   stakeholderQuestions?: string[];
 };
-export type CoverageIssue = { item: string; issue: string };
 export type GeneratePayload = {
   requirement: string;
+  workspace?: string;
   domain: Domain;
   projectType: ProjectType;
   documentType: DocumentType;
   section?: keyof RequirementsResult;
+};
+export type RequirementQuality = {
+  label: "Strong" | "Needs more detail" | "Too vague";
+  suggestions: string[];
 };
 
 function getClient() {
@@ -73,25 +77,44 @@ async function requestJson(system: string, user: string) {
   return JSON.parse(content);
 }
 
+function pickDocumentSections(data: RequirementsResult, keys: (keyof RequirementsResult)[]): RequirementsResult {
+  return keys.reduce<RequirementsResult>((result, key) => {
+    if (data[key] !== undefined) {
+      return { ...result, [key]: data[key] };
+    }
+    return result;
+  }, {});
+}
+
 export async function generateRequirements(payload: GeneratePayload): Promise<RequirementsResult> {
   const keys = payload.section ? [payload.section] : keysByDocumentType[payload.documentType];
   const system = [
     `Act as a senior Business Analyst for ${payload.domain} and ${payload.projectType}.`,
     "Return ONLY valid JSON, no markdown fences, no commentary.",
-    `Include only these keys: ${keys.join(", ")}.`,
+    `Document type: ${payload.documentType}. Include exactly these keys and no others: ${keys.join(", ")}.`,
+    payload.documentType === "Quick User Story"
+      ? "Keep it concise and focus only on actionable user stories and testable acceptance criteria."
+      : payload.documentType === "Standard Requirements Doc"
+        ? "Create a delivery-ready requirements document without risks, assumptions, edge cases, test scenarios, or stakeholder questions."
+        : "Create a complete requirements package with risks, assumptions, edge cases, test scenarios, stakeholder questions, and traceability-ready detail.",
     "Schema: executiveSummary string; userStories string[]; acceptanceCriteria {given,when,then}[]; functionalRequirements string[]; nonFunctionalRequirements string[]; risks string[]; assumptions string[]; edgeCases string[]; testScenarios string[]; stakeholderQuestions string[].",
   ].join(" ");
   const user = `Business requirement: ${payload.requirement}`;
-  return requestJson(system, user);
+  const data = await requestJson(system, user);
+  return pickDocumentSections(data, keys);
 }
 
-export async function checkCoverage(requirements: RequirementsResult): Promise<CoverageIssue[]> {
-  const system = "Act as a senior Business Analyst QA reviewer. Return ONLY valid JSON shaped as {\"issues\":[{\"item\":\"string\",\"issue\":\"string\"}]}. No markdown or commentary.";
+export async function checkRequirementQuality(requirement: string): Promise<RequirementQuality> {
+  const system = "Act as a senior Business Analyst. Return ONLY valid JSON shaped as {\"label\":\"Strong|Needs more detail|Too vague\",\"suggestions\":[\"string\"]}. Give at most 3 concise suggestions.";
   const user = [
-    "Check this generated requirements package for gaps and consistency issues.",
-    "Flag acceptance criteria with no related test scenario, risks with no related assumption or mitigation, and user stories with no acceptance criteria.",
-    `Requirements package: ${JSON.stringify(requirements)}`,
+    "Check this raw requirement for vague language such as fast, user-friendly, easy, simple, or efficient without a metric.",
+    "Also flag missing specifics such as no actor, no clear trigger, no measurable outcome, or no business rule.",
+    `Raw requirement: ${requirement}`,
   ].join(" ");
   const data = await requestJson(system, user);
-  return Array.isArray(data.issues) ? data.issues : [];
+  const labels = ["Strong", "Needs more detail", "Too vague"];
+  return {
+    label: labels.includes(data.label) ? data.label : "Needs more detail",
+    suggestions: Array.isArray(data.suggestions) ? data.suggestions.slice(0, 3).map(String) : [],
+  };
 }

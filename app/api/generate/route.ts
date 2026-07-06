@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { checkCoverage, generateRequirements, type GeneratePayload } from "@/lib/llm";
+import { generateRequirements, type GeneratePayload } from "@/lib/llm";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as GeneratePayload;
@@ -11,11 +11,7 @@ export async function POST(request: Request) {
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
       const requirements = await generateRequirements(body);
-      const coverageReport =
-        body.documentType === "Full Requirements Package" && !body.section
-          ? await checkCoverage(requirements)
-          : [];
-      return NextResponse.json({ requirements, coverageReport });
+      return NextResponse.json({ requirements });
     } catch (error) {
       if (attempt === 2) {
         const message = error instanceof Error ? error.message : "Unknown generation error.";

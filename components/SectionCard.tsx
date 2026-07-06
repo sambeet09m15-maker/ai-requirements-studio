@@ -20,12 +20,14 @@ export function SectionCard({
   section,
   content,
   documentType,
+  compactMode,
   onRegenerate,
 }: {
   title: string;
   section: keyof RequirementsResult;
   content: unknown;
   documentType: DocumentType;
+  compactMode: boolean;
   onRegenerate: (section: keyof RequirementsResult, documentType: DocumentType) => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -49,10 +51,13 @@ export function SectionCard({
   }
 
   return (
-    <Card className="rounded-lg">
-      <CardHeader className="flex flex-row items-center justify-between gap-3">
-        <CardTitle className="text-base">{title}</CardTitle>
-        <div className="flex gap-2">
+    <Card className="rounded-lg border-slate-200 bg-white shadow-sm">
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <CardTitle className="text-base text-slate-950">{title}</CardTitle>
+          <p className="mt-1 text-xs text-slate-500">{documentType}</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={copyText} aria-label={`Copy ${title}`}>
             {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
             Copy
@@ -68,7 +73,7 @@ export function SectionCard({
         </div>
       </CardHeader>
       <CardContent>
-        <pre className="text-foreground whitespace-pre-wrap font-sans text-sm leading-6">{text}</pre>
+        <pre className={`whitespace-pre-wrap rounded-md border border-slate-100 bg-slate-50 font-sans text-sm text-slate-700 ${compactMode ? "p-3 leading-5" : "p-4 leading-6"}`}>{text}</pre>
       </CardContent>
     </Card>
   );
