@@ -1,286 +1,395 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, CircleHelp, Clock3, FileCheck2, FileText, Info, Layers3, Network, ScanSearch, Settings2 } from "lucide-react";
-import { Toaster } from "@/components/ui/sonner";
-import { RequirementForm } from "@/components/RequirementForm";
-import { OutputTabs } from "@/components/OutputTabs";
-import { Loader } from "@/components/Loader";
-import { KnowledgeArtifacts } from "@/components/KnowledgeArtifacts";
-import { HistoryPanel } from "@/components/HistoryPanel";
-import { OnboardingTour, replayTour } from "@/components/OnboardingTour";
-import { WorkspaceList } from "@/components/WorkspaceList";
-import { saveHistoryEntry, type AnalysisHistoryEntry } from "@/lib/historyStorage";
-import { DEFAULT_WORKSPACE } from "@/lib/workspaceStorage";
-import type { DocumentType, GeneratePayload, RequirementsResult } from "@/lib/llm";
+import {
+  ArrowRight,
+  BadgeCheck,
+  BookOpenText,
+  BrainCircuit,
+  CheckCircle2,
+  FileSearch,
+  FileText,
+  Layers3,
+  ListChecks,
+  Network,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+} from "lucide-react";
+
+const outcomes = [
+  "Turn rough stakeholder notes into structured BA documentation",
+  "Generate user stories, acceptance criteria, BRD/FRD content, and traceability views",
+  "Use built-in BA learning tools when you need a concept, example, or next step",
+];
+
+const workflow = [
+  {
+    title: "Capture the business need",
+    description: "Start with messy input from a meeting, email, process gap, or stakeholder request.",
+    icon: FileText,
+  },
+  {
+    title: "Generate a BA package",
+    description: "Choose the domain, project style, and document depth, then create structured outputs.",
+    icon: Sparkles,
+  },
+  {
+    title: "Review and refine",
+    description: "Check coverage, regenerate weak sections, and keep history by workspace.",
+    icon: ListChecks,
+  },
+];
+
+const tools = [
+  {
+    title: "Requirements Studio",
+    description: "The full workspace for generating and refining stakeholder-ready requirements.",
+    href: "/dashboard",
+    icon: BrainCircuit,
+  },
+  {
+    title: "Concept Map",
+    description: "A visual map of BA concepts across the SDLC, roles, artifacts, testing, and support.",
+    href: "/concept-map",
+    icon: Network,
+  },
+  {
+    title: "Requirement Autopsy",
+    description: "A worked logistics example that turns one vague requirement into a complete BA trail.",
+    href: "/requirement-autopsy",
+    icon: FileSearch,
+  },
+  {
+    title: "Situation Guide",
+    description: "Practical answers for common BA moments: unclear stakeholders, vague stories, priority conflict, and more.",
+    href: "/situation-guide",
+    icon: BookOpenText,
+  },
+];
+
+const features = [
+  {
+    title: "AI Requirements Generator",
+    description:
+      "Paste any business requirement and get structured User Stories, Acceptance Criteria, BRD, FRD, Test Scenarios and more — in under 10 seconds. Domain-aware and coverage-checked.",
+    href: "/dashboard",
+    link: "Try it free →",
+    icon: Zap,
+  },
+  {
+    title: "BA Knowledge Hub",
+    description:
+      "56 Business Analysis concepts across 8 SDLC phases. Interactive concept map, worked examples, practical situation guide, and requirement autopsy — all free, no login needed.",
+    href: "/concept-map",
+    link: "Explore the Hub →",
+    icon: BookOpenText,
+  },
+  {
+    title: "Smart Workspaces",
+    description:
+      "Organise requirements by project. Save every generated document with full history. Export to Word or PDF. Track coverage gaps across your entire requirement set.",
+    href: "/dashboard",
+    link: "See how it works →",
+    icon: Layers3,
+  },
+];
+
+const freeFeatures = [
+  "Full BA Knowledge Hub",
+  "Interactive Concept Map",
+  "Situation Guide & Requirement Autopsy",
+  "5 AI generations per month",
+  "Quick User Story mode",
+];
+
+const proFeatures = [
+  "Everything in Free",
+  "Unlimited AI generations",
+  "All 10 document types",
+  "Gap & Coverage Checker",
+  "Export as Word / PDF",
+  "Workspaces & full history",
+  "Priority support",
+];
 
 export default function Home() {
-  const [result, setResult] = useState<RequirementsResult | null>(null);
-  const [lastPayload, setLastPayload] = useState<GeneratePayload | null>(null);
-  const [activeTab, setActiveTab] = useState<string | undefined>();
-  const [compactMode, setCompactMode] = useState(false);
-  const [showGuidance, setShowGuidance] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [selectedWorkspace, setSelectedWorkspace] = useState(DEFAULT_WORKSPACE);
-  const [restoredPayload, setRestoredPayload] = useState<GeneratePayload | null>(null);
-  const [aboutOpen, setAboutOpen] = useState(false);
-  const outputRef = useRef<HTMLDivElement>(null);
-  const aboutRef = useRef<HTMLDivElement>(null);
-
-  function selectWorkspaceTab() {
-    setActiveTab(undefined);
-    outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  useEffect(() => {
-    if (!aboutOpen) return;
-
-    function handlePointerDown(event: PointerEvent) {
-      if (aboutRef.current?.contains(event.target as Node)) return;
-      setAboutOpen(false);
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [aboutOpen]);
-
-  async function generate(payload: GeneratePayload) {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Generation failed.");
-      }
-      setLastPayload(payload);
-      setResult(data.requirements);
-      setSelectedWorkspace(payload.workspace || DEFAULT_WORKSPACE);
-      saveHistoryEntry({ payload, result: data.requirements });
-      setActiveTab(Object.keys(data.requirements || {})[0]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Generation failed.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function loadHistory(entry: AnalysisHistoryEntry) {
-    setRestoredPayload(entry.payload);
-    setLastPayload(entry.payload);
-    setResult(entry.result);
-    setSelectedWorkspace(entry.payload.workspace || DEFAULT_WORKSPACE);
-    setActiveTab(Object.keys(entry.result || {})[0]);
-    outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function handleWorkspaceRemoved(workspace: string) {
-    if (selectedWorkspace === workspace) {
-      setSelectedWorkspace(DEFAULT_WORKSPACE);
-    }
-  }
-
-  async function regenerateSection(section: keyof RequirementsResult, documentType: DocumentType) {
-    const current = result;
-    if (!current || !lastPayload) return;
-    setError("");
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          requirement: `${lastPayload.requirement}\n\nRegenerate only this section from the existing requirements package: ${section}. Existing package: ${JSON.stringify(current)}`,
-          domain: lastPayload.domain,
-          projectType: lastPayload.projectType,
-          documentType,
-          section,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Regeneration failed.");
-      }
-      setResult({ ...current, [section]: data.requirements[section] });
-      setActiveTab(section);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Regeneration failed.");
-    }
-  }
-
   return (
-    <main className="min-h-screen bg-[#f6f8fb]">
-      <div className="grid min-h-screen lg:grid-cols-[260px_1fr]">
-        <aside className="bg-sidebar text-sidebar-foreground border-sidebar-border border-r px-5 py-6 shadow-2xl shadow-indigo-950/15">
-          <div className="flex items-center gap-3">
-            <div className="flex size-12 items-center justify-center overflow-hidden rounded-md bg-white shadow-lg shadow-cyan-500/20">
-              <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={48} height={48} className="size-12 object-cover" priority />
-            </div>
-            <div>
-              <p className="whitespace-nowrap text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-cyan-100/80">BA Knowledge Hub</p>
-              <h1 className="text-xl font-semibold text-white">AI Studio</h1>
-            </div>
-          </div>
-          <nav className="mt-9 space-y-1 text-sm">
-            <button
-              type="button"
-              onClick={selectWorkspaceTab}
-              className="flex w-full items-center gap-2 rounded-md bg-sidebar-accent px-3 py-2 text-left font-medium text-sidebar-accent-foreground shadow-sm transition"
-            >
-              <FileText className="size-4" />
-              Requirements
-            </button>
-            <button
-              id="history-nav"
-              type="button"
-              onClick={() => document.getElementById("history-panel")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left font-medium text-cyan-100/75 transition hover:bg-white/10 hover:text-white"
-            >
-              <Clock3 className="size-4" />
-              History
-            </button>
+    <main className="min-h-screen bg-[#f7fafc] text-slate-950">
+      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+          <Link href="/" className="flex items-center gap-3">
+            <span className="flex size-11 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white">
+              <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={44} height={44} className="size-11 object-cover" priority />
+            </span>
+            <span className="text-lg font-semibold text-slate-950">BA Copilot</span>
+          </Link>
+
+          <nav className="hidden items-center gap-2 text-sm font-medium text-slate-600 md:flex">
+            <a href="#workflow" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
+              Workflow
+            </a>
+            <a href="#tools" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
+              Tools
+            </a>
+            <a href="#quality" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
+              Quality
+            </a>
           </nav>
-          <div className="mt-8 rounded-lg border border-white/10 bg-white/10 p-4 text-sm text-cyan-50/85">
-            <div className="mb-2 flex items-center gap-2 font-medium text-white">
-              <Layers3 className="size-4 text-cyan-200" />
-              Document Modes
-            </div>
-            <p className="leading-6">Quick stories, standard docs, or a full requirements package with traceability review.</p>
-          </div>
-          <div id="preferences" className="mt-4 scroll-mt-5 rounded-lg border border-white/10 bg-white/10 p-4 text-sm text-cyan-50/85">
-            <div className="mb-3 flex items-center gap-2 font-medium text-white">
-              <Settings2 className="size-4 text-cyan-200" />
-              Preferences
-            </div>
-            <label className="flex items-center justify-between gap-3 py-2">
-              Compact output
-              <input type="checkbox" checked={compactMode} onChange={(event) => setCompactMode(event.target.checked)} className="size-4 accent-cyan-300" />
-            </label>
-            <label className="flex items-center justify-between gap-3 py-2">
-              Field guidance
-              <input type="checkbox" checked={showGuidance} onChange={(event) => setShowGuidance(event.target.checked)} className="size-4 accent-cyan-300" />
-            </label>
-            <button type="button" onClick={replayTour} className="mt-2 text-left text-xs font-medium text-cyan-100 underline-offset-4 hover:text-white hover:underline">
-              Replay tour
-            </button>
-          </div>
-          <WorkspaceList selected={selectedWorkspace} onSelect={setSelectedWorkspace} onRemove={handleWorkspaceRemoved} />
-          <div id="history" className="scroll-mt-5">
-            <HistoryPanel onLoad={loadHistory} />
-          </div>
-        </aside>
 
-        <section className="px-4 py-5 sm:px-7 lg:px-9">
-          <div className="mx-auto max-w-7xl">
-            <header className="mb-5 rounded-lg border border-slate-200 bg-white shadow-sm">
-              <div className="flex flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
-                <a href="#overview" className="flex items-center gap-3">
-                  <span className="flex size-11 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white">
-                    <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={44} height={44} className="size-11 object-cover" priority />
-                  </span>
-                  <span>
-                    <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">BA Knowledge Hub</span>
-                    <span className="block text-lg font-semibold text-slate-950">AI Studio</span>
-                  </span>
-                </a>
-                <nav className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-600">
-                  <button type="button" onClick={() => setAboutOpen(true)} className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">About Application</button>
-                  <a href="#knowledge-artifacts" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">Knowledge Artifacts</a>
-                  <a href="#requirements" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">Requirements</a>
-                  <a href="#requirements" className="inline-flex items-center gap-2 rounded-md bg-blue-700 px-4 py-2 text-white shadow-sm transition hover:bg-blue-800">
-                    Start Analysis
-                    <ArrowRight className="size-4" />
-                  </a>
-                </nav>
-              </div>
-            </header>
-            {aboutOpen ? (
-              <div ref={aboutRef} id="about-application" className="mb-5 scroll-mt-5 rounded-lg border border-blue-100 bg-white p-4 text-sm leading-6 text-slate-600 shadow-sm">
-                <div className="mb-2 flex items-center gap-2 font-semibold text-slate-950">
-                  <Info className="size-4 text-blue-700" />
-                  About Application
-                </div>
-                <p>
-                  BA Knowledge Hub AI Studio helps business analysts turn raw business input into structured requirements, supporting documents,
-                  traceability mapping, and reusable BA knowledge artifacts in one focused workspace.
-                </p>
-              </div>
-            ) : null}
+          <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800">
+            Open Dashboard
+            <ArrowRight className="size-4" />
+          </Link>
+        </div>
+      </header>
 
-            <div id="overview" className="mb-5 scroll-mt-5 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-              <div className="grid min-h-[230px] lg:grid-cols-[1.2fr_0.8fr]">
-                <div className="flex flex-col justify-between gap-5 bg-[#10213f] p-5 text-white sm:p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-blue-50 ring-1 ring-white/15">
-                      <FileCheck2 className="size-4" />
-                      Enterprise requirements workspace
-                    </span>
-                    {result ? (
-                      <span className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-blue-50 ring-1 ring-white/15">
-                        <CheckCircle2 className="size-4 text-emerald-300" />
-                        {lastPayload?.documentType}
-                      </span>
-                    ) : null}
-                  </div>
+      <section className="relative overflow-hidden bg-slate-950 text-white">
+        <div className="absolute inset-0">
+          <Image src="/ba-knowledge-hub-logo.png" alt="" fill sizes="100vw" className="object-cover opacity-[0.08]" priority />
+          <div className="absolute inset-0 bg-slate-950/88" />
+        </div>
+        <div className="relative mx-auto grid min-h-[640px] max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.04fr_0.96fr] lg:px-8 lg:py-20">
+          <div className="flex flex-col justify-center">
+            <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-md border border-cyan-200/20 bg-white/10 px-3 py-1.5 text-sm font-medium text-cyan-50">
+              <ShieldCheck className="size-4 text-cyan-200" />
+              AI workspace for business analysts
+            </div>
+            <h1 className="max-w-4xl text-5xl font-semibold leading-[1.03] tracking-normal text-white sm:text-6xl lg:text-7xl">BA Copilot</h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200">
+              Transform raw business input into clear requirements, acceptance criteria, traceability, and BA-ready learning artifacts in one focused studio.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-cyan-200">
+                Launch BA Copilot
+                <ArrowRight className="size-4" />
+              </Link>
+              <a href="#tools" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/15">
+                Explore Tools
+                <Layers3 className="size-4" />
+              </a>
+            </div>
+          </div>
+
+          <div className="flex items-end">
+            <div className="w-full rounded-lg border border-white/15 bg-white p-4 text-slate-950 shadow-2xl shadow-cyan-950/30">
+              <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
+                <div className="mb-4 flex items-center justify-between gap-3">
                   <div>
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-blue-200">Business Analysis Documentation</p>
-                    <h2 className="max-w-3xl text-3xl font-semibold tracking-normal text-white sm:text-4xl">Generate structured requirements from raw business input.</h2>
-                    <p className="mt-4 max-w-3xl text-sm leading-6 text-blue-50/85">Create stakeholder-ready requirements, review traceability, and keep core BA concepts close to the work surface.</p>
-                    <div className="mt-4 grid gap-2 text-xs text-blue-50/85 sm:grid-cols-3">
-                      <Link href="/requirement-autopsy" className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 ring-1 ring-white/10 transition hover:bg-white/15">
-                        <ScanSearch className="size-4" />
-                        Requirement Autopsy
-                      </Link>
-                      <Link href="/concept-map" className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 ring-1 ring-white/10 transition hover:bg-white/15">
-                        <Network className="size-4" />
-                        Concept Map
-                      </Link>
-                      <Link href="/situation-guide" className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 ring-1 ring-white/10 transition hover:bg-white/15">
-                        <CircleHelp className="size-4" />
-                        Situation Guide
-                      </Link>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">Requirements Preview</p>
+                    <h2 className="mt-1 text-xl font-semibold">Shipment delay alert</h2>
+                  </div>
+                  <BadgeCheck className="size-6 text-emerald-600" />
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="rounded-md border border-slate-200 bg-white p-3">
+                    <p className="font-semibold text-slate-900">User Story</p>
+                    <p className="mt-1 leading-6 text-slate-600">As an operations coordinator, I want delay alerts so I can act before customers contact support.</p>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-md border border-slate-200 bg-white p-3">
+                      <p className="font-semibold text-slate-900">Acceptance Criteria</p>
+                      <p className="mt-1 leading-6 text-slate-600">Given / When / Then checks for delay threshold, recipient, and notification timing.</p>
+                    </div>
+                    <div className="rounded-md border border-slate-200 bg-white p-3">
+                      <p className="font-semibold text-slate-900">Traceability</p>
+                      <p className="mt-1 leading-6 text-slate-600">Links business need, story, AC, test scenario, and UAT sign-off.</p>
                     </div>
                   </div>
                 </div>
-                <div className="flex min-h-[210px] items-center justify-center bg-slate-50 p-5">
-                  <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub insights and documentation" width={430} height={280} className="h-auto max-h-48 w-full max-w-md object-contain" priority />
-                </div>
               </div>
-            </div>
-            <div id="knowledge-artifacts" className="mb-5 scroll-mt-5">
-              <KnowledgeArtifacts />
-            </div>
-            <div className="grid gap-5 xl:grid-cols-[390px_1fr]">
-              <div id="requirements" className="scroll-mt-5 space-y-5">
-                <RequirementForm key={restoredPayload ? `${restoredPayload.requirement}-${restoredPayload.documentType}-${restoredPayload.workspace}` : "new-analysis"} onGenerate={generate} loading={loading} showGuidance={showGuidance} restoredPayload={restoredPayload} />
-              </div>
-              <div id="output-tabs" ref={outputRef} className="min-w-0 scroll-mt-5">
-                {loading ? (
-                  <Loader />
-                ) : (
-                  <OutputTabs
-                    result={result}
-                    error={error}
-                    documentType={lastPayload?.documentType}
-                    activeTab={activeTab}
-                    compactMode={compactMode}
-                    onTabChange={setActiveTab}
-                    onRegenerate={regenerateSection}
-                  />
-                )}
-              </div>
+              <p className="mt-3 text-xs leading-5 text-slate-500">Preview only. Open the dashboard to generate complete BA documentation.</p>
             </div>
           </div>
-        </section>
-      </div>
-      <OnboardingTour />
-      <Toaster />
+        </div>
+      </section>
+
+      <section id="features" className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Features</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Everything a BA needs to move from request to clarity.</h2>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <article key={feature.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex size-11 items-center justify-center rounded-md bg-cyan-50 text-cyan-700">
+                    <Icon className="size-5" />
+                  </div>
+                  <h3 className="mt-5 text-xl font-semibold text-slate-950">{feature.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{feature.description}</p>
+                  <Link href={feature.href} className="mt-5 inline-flex items-center text-sm font-semibold text-blue-700 transition hover:text-blue-900">
+                    {feature.link}
+                  </Link>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" className="bg-[#f7fafc]">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Pricing</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Start free, upgrade when your workflow grows.</h2>
+          </div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">FREE</p>
+              <h3 className="mt-3 text-4xl font-semibold text-slate-950">₹0 <span className="text-base font-medium text-slate-500">/ forever</span></h3>
+              <ul className="mt-6 space-y-3">
+                {freeFeatures.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm leading-6 text-slate-700">
+                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/dashboard" className="mt-7 inline-flex items-center justify-center gap-2 rounded-md bg-cyan-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-700">
+                Get Started Free →
+              </Link>
+            </article>
+
+            <article className="relative rounded-lg border border-cyan-500 bg-cyan-50 p-6 shadow-sm">
+              <span className="absolute right-5 top-5 rounded-md bg-cyan-700 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">Most Popular</span>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-800">PRO</p>
+              <h3 className="mt-3 text-4xl font-semibold text-slate-950">₹599 <span className="text-base font-medium text-slate-500">/ month</span></h3>
+              <ul className="mt-6 space-y-3">
+                {proFeatures.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm leading-6 text-slate-700">
+                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <button type="button" disabled className="mt-7 inline-flex cursor-not-allowed items-center justify-center rounded-md bg-slate-300 px-5 py-3 text-sm font-semibold text-slate-600">
+                Coming Soon
+              </button>
+              <p className="mt-4 text-sm leading-6 text-slate-600">Sign up free today and we will notify you when Pro launches.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-4 px-4 py-8 sm:px-6 md:grid-cols-3 lg:px-8">
+          {outcomes.map((outcome) => (
+            <div key={outcome} className="flex items-start gap-3">
+              <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+              <p className="text-sm leading-6 text-slate-700">{outcome}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="workflow" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="max-w-3xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Workflow</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">From raw request to review-ready requirements.</h2>
+        </div>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {workflow.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <article key={item.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="flex items-center justify-between gap-4">
+                  <Icon className="size-6 text-blue-700" />
+                  <span className="text-sm font-semibold text-slate-400">0{index + 1}</span>
+                </div>
+                <h3 className="mt-5 text-lg font-semibold text-slate-950">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section id="tools" className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div className="max-w-3xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Knowledge Hub</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Built-in tools for daily BA work.</h2>
+            </div>
+            <Link href="/dashboard" className="inline-flex w-fit items-center gap-2 rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+              Start in Dashboard
+              <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {tools.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <Link key={tool.title} href={tool.href} className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-200 hover:shadow-md">
+                  <div className="flex items-start gap-4">
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-md bg-blue-50 text-blue-700">
+                      <Icon className="size-5" />
+                    </span>
+                    <span>
+                      <span className="flex items-center gap-2 text-lg font-semibold text-slate-950">
+                        {tool.title}
+                        <ArrowRight className="size-4 text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-700" />
+                      </span>
+                      <span className="mt-2 block text-sm leading-6 text-slate-600">{tool.description}</span>
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="quality" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Quality</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Designed for useful output, not generic text.</h2>
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              BA Copilot keeps the workflow grounded in document types, domains, project styles, traceability, and concrete examples so the output is easier to review and improve.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {["BRD and FRD structure", "User stories and acceptance criteria", "Coverage and traceability review", "Workspace history for reuse"].map((item) => (
+              <div key={item} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                <CheckCircle2 className="mb-3 size-5 text-emerald-600" />
+                <p className="text-sm font-semibold text-slate-900">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-950 text-white">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <div className="max-w-3xl">
+            <h2 className="text-3xl font-semibold tracking-normal sm:text-4xl">Generate your first requirement document in 30 seconds.</h2>
+            <p className="mt-4 text-base leading-7 text-slate-300">Free. No credit card. No setup. Just paste a requirement and see what happens.</p>
+          </div>
+          <Link href="/dashboard" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-cyan-200">
+            Start Generating Free →
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-slate-200 bg-slate-950 text-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-sm font-semibold">BA Copilot</p>
+              <p className="mt-1 text-sm text-slate-400">Your GenAI Co-Pilot for Business Analysis</p>
+            </div>
+            <p className="text-sm text-slate-400">© 2025 BA Copilot. All rights reserved.</p>
+          </div>
+          <div className="flex gap-2 text-sm text-slate-400">
+            <a href="#" className="transition hover:text-white">Privacy Policy</a>
+            <span>·</span>
+            <a href="#" className="transition hover:text-white">Terms</a>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

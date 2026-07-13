@@ -9,16 +9,16 @@ export default function SituationGuidePage() {
       <div className="mx-auto max-w-7xl">
         <header className="mb-5 rounded-lg border border-slate-200 bg-white shadow-sm">
           <div className="flex flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
-            <Link href="/" className="flex items-center gap-3">
+            <Link href="/dashboard" className="flex items-center gap-3">
               <span className="flex size-11 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white">
                 <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={44} height={44} className="size-11 object-cover" priority />
               </span>
               <span>
-                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">BA Knowledge Hub</span>
-                <span className="block text-lg font-semibold text-slate-950">AI Studio</span>
+                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">BA Copilot</span>
+                <span className="block text-lg font-semibold text-slate-950">BA Copilot</span>
               </span>
             </Link>
-            <Link href="/" className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
+            <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
               <ArrowLeft className="size-4" />
               Back to Studio
             </Link>

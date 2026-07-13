@@ -87,13 +87,15 @@ export const conceptMapNodes = [
     description: "The detailed design of individual system components or modules. A BA ensures that each component is specified well enough for developers to build it correctly and for testers to verify it against the original requirements." },
 
   // ── DEVELOPMENT
-  { id: "dor",          label: "Definition of Ready",    category: "techniques", x: 28, y: 59,
+  { id: "training_plan",label: "Training Plan",          category: "artifacts",  x: 9,  y: 57,
+    description: "A document outlining how users will be trained on a new system before go-live — covering what will be taught, who will be trained, in what format, and when. Created during Development so training materials are ready before Deployment. BAs often own this artefact." },
+  { id: "dor",          label: "Definition of Ready",    category: "techniques", x: 28, y: 57,
     description: "The checklist a user story must pass before the development team agrees to work on it. Typically requires a clear description, written acceptance criteria, and no unresolved open questions. The BA is usually responsible for getting a story to Ready before it enters a sprint." },
-  { id: "sprint_plan",  label: "Sprint Planning",        category: "ceremonies", x: 48, y: 59,
+  { id: "sprint_plan",  label: "Sprint Planning",        category: "ceremonies", x: 48, y: 57,
     description: "The ceremony at the start of each sprint where the team decides what to build. Top-priority backlog items are selected, a sprint goal is agreed, and stories that are already clear and ready are committed to. A BA attends to answer any last-minute questions." },
-  { id: "refinement",   label: "Backlog Refinement",     category: "ceremonies", x: 68, y: 59,
+  { id: "refinement",   label: "Backlog Refinement",     category: "ceremonies", x: 68, y: 57,
     description: "An ongoing ceremony where the team reviews upcoming backlog items. Vague stories get clarified, oversized stories get broken down, and estimates are discussed. This is where a BA does the bulk of their day-to-day work in an Agile team." },
-  { id: "dod",          label: "Definition of Done",     category: "techniques", x: 89, y: 59,
+  { id: "dod",          label: "Definition of Done",     category: "techniques", x: 89, y: 57,
     description: "The development team's checklist for when a user story is truly finished — typically: code complete, tested, reviewed, and meeting all acceptance criteria. Prevents 'done' from meaning different things to different people and ensures consistent quality across sprints." },
 
   // ── TESTING ROW 1: STLC → Test Scenario → Test Case → Functional → SIT
@@ -119,15 +121,13 @@ export const conceptMapNodes = [
     description: "The formal sign-off by business stakeholders confirming that the system meets their requirements and they are ready to go live. A BA facilitates and documents this approval, which acts as the gate between testing completion and deployment." },
 
   // ── DEPLOYMENT
-  { id: "training_plan",label: "Training Plan",          category: "artifacts",  x: 9,  y: 75,
-    description: "A document outlining how users will be trained on a new system before go-live — covering what will be taught, who will be trained, in what format, and when. Finalized during Deployment so training materials are ready before Go Live. BAs often own this artefact." },
-  { id: "dep_planning",  label: "Deployment Planning",    category: "deployment",x: 22, y: 75,
+  { id: "dep_planning",  label: "Deployment Planning",    category: "deployment",x: 22, y: 74,
     description: "The process of defining how the new system will be released — including timing, rollout approach (big bang vs phased), rollback plan, and stakeholder communication. A BA confirms all acceptance criteria have been met before the deployment date is committed." },
-  { id: "env_setup",     label: "Environment Setup",      category: "deployment",x: 46, y: 75,
+  { id: "env_setup",     label: "Environment Setup",      category: "deployment",x: 46, y: 74,
     description: "The preparation of staging, UAT, and production environments before deployment. A BA ensures these environments reflect real business conditions — correct data volumes, user permissions, and integrations — so testing and go-live are meaningful." },
-  { id: "deployment_node",label: "Deployment",            category: "deployment",x: 67, y: 75,
+  { id: "deployment_node",label: "Deployment",            category: "deployment",x: 67, y: 74,
     description: "The act of releasing the built and tested system to the live environment. A BA monitors this process to confirm the deployed system matches what was agreed in requirements and flags any discrepancies before users are impacted." },
-  { id: "go_live",       label: "Go Live",                category: "deployment",x: 83, y: 75,
+  { id: "go_live",       label: "Go Live",                category: "deployment",x: 83, y: 74,
     description: "The moment the new system becomes available to real users. A BA coordinates readiness across business teams — confirming training is complete, support processes are in place, and stakeholders know what to expect — then monitors early adoption to catch issues quickly." },
 
   // ── PRODUCTION SUPPORT
