@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 import { ArrowRight, CheckCircle2, CircleHelp, Clock3, FileCheck2, FileText, Info, Layers3, Network, ScanSearch, Settings2 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { RequirementForm } from "@/components/RequirementForm";
@@ -195,6 +196,8 @@ export default function Home() {
                     Start Analysis
                     <ArrowRight className="size-4" />
                   </a>
+                  <a href="/profile" style={{ color: "#0d9488", fontSize: "13px", marginRight: "12px", textDecoration: "none" }}>Profile</a>
+                  <UserButton />
                 </nav>
               </div>
             </header>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SearchCheck, WandSparkles } from "lucide-react";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +33,7 @@ export function RequirementForm({
   const [quality, setQuality] = useState<RequirementQuality | null>(null);
   const [qualityLoading, setQualityLoading] = useState(false);
   const [qualityError, setQualityError] = useState("");
+  const { isSignedIn } = useUser();
 
   async function checkQuality() {
     if (!requirement.trim()) return;
@@ -110,15 +112,28 @@ export function RequirementForm({
             ) : null}
           </div>
         </div>
-        <Button
-          id="generate-button"
-          className="h-10 w-full bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-200 hover:from-indigo-500 hover:to-cyan-500"
-          disabled={loading || !requirement.trim()}
-          onClick={() => onGenerate({ requirement, workspace, domain, projectType, documentType })}
-        >
-          <WandSparkles className="size-4" />
-          {loading ? "Generating" : "Generate"}
-        </Button>
+        {isSignedIn ? (
+          <Button
+            id="generate-button"
+            className="h-10 w-full bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-200 hover:from-indigo-500 hover:to-cyan-500"
+            disabled={loading || !requirement.trim()}
+            onClick={() => onGenerate({ requirement, workspace, domain, projectType, documentType })}
+          >
+            <WandSparkles className="size-4" />
+            {loading ? "Generating" : "Generate"}
+          </Button>
+        ) : (
+          <SignInButton mode="modal">
+            <Button
+              id="generate-button"
+              type="button"
+              className="h-10 w-full bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-200 hover:from-indigo-500 hover:to-cyan-500"
+            >
+              <WandSparkles className="size-4" />
+              Sign in to Generate — it&apos;s free
+            </Button>
+          </SignInButton>
+        )}
         <Button type="button" variant="outline" className="h-10 w-full" disabled={qualityLoading || !requirement.trim()} onClick={checkQuality}>
           <SearchCheck className="size-4" />
           {qualityLoading ? "Checking" : "Check Quality"}

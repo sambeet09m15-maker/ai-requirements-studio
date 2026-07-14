@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
+import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import {
   ArrowRight,
   BookOpenText,
@@ -215,6 +216,8 @@ function ParticleBackground() {
 }
 
 export default function Home() {
+  const { isSignedIn } = useUser();
+
   return (
     <main className="min-h-screen bg-[#f7fafc] text-slate-950">
       <header
@@ -249,16 +252,30 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link href="/dashboard" style={{ color: "rgba(255,255,255,0.7)" }} className="rounded-md px-3 py-2 text-sm font-medium transition hover:text-white">
-              Sign In
-            </Link>
-            <Link
-              href="/dashboard"
-              style={{ background: "#0d9488", color: "white" }}
-              className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-sm transition hover:opacity-90"
-            >
-              Try Free →
-            </Link>
+            {isSignedIn ? (
+              <>
+                <Link href="/dashboard" style={{ color: "rgba(255,255,255,0.7)" }} className="rounded-md px-3 py-2 text-sm font-medium transition hover:text-white">
+                  Dashboard
+                </Link>
+                <UserButton />
+              </>
+            ) : (
+              <>
+                <SignInButton mode="modal">
+                  <button style={{ color: "rgba(255,255,255,0.7)" }} className="rounded-md px-3 py-2 text-sm font-medium transition hover:text-white">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button
+                    style={{ background: "#0d9488", color: "white" }}
+                    className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-sm transition hover:opacity-90"
+                  >
+                    Try Free →
+                  </button>
+                </SignUpButton>
+              </>
+            )}
           </div>
         </div>
       </header>
