@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BadgeCheck,
   BookOpenText,
   BrainCircuit,
   CheckCircle2,
@@ -118,21 +117,21 @@ export default function Home() {
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
-            <span className="flex size-11 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white">
-              <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={44} height={44} className="size-11 object-cover" priority />
-            </span>
-            <span className="text-lg font-semibold text-slate-950">BA Copilot</span>
+            <Image src="/logo.svg" alt="BA Copilot" width={140} height={36} priority />
           </Link>
 
           <nav className="hidden items-center gap-2 text-sm font-medium text-slate-600 md:flex">
+            <a href="#features" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
+              Features
+            </a>
             <a href="#workflow" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
               Workflow
             </a>
             <a href="#tools" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
               Tools
             </a>
-            <a href="#quality" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
-              Quality
+            <a href="#pricing" className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">
+              Pricing
             </a>
           </nav>
 
@@ -171,33 +170,110 @@ export default function Home() {
           </div>
 
           <div className="flex items-end">
-            <div className="w-full rounded-lg border border-white/15 bg-white p-4 text-slate-950 shadow-2xl shadow-cyan-950/30">
-              <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">Requirements Preview</p>
-                    <h2 className="mt-1 text-xl font-semibold">Shipment delay alert</h2>
+            <div style={{ background: 'white', border: '0.5px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden', maxWidth: '560px', width: '100%', fontFamily: 'system-ui, sans-serif', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+
+              {/* Top bar */}
+              <div style={{ background: '#f8fafc', padding: '7px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '0.5px solid #e2e8f0' }}>
+                <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, letterSpacing: '1px' }}>LIVE PREVIEW</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span style={{ fontSize: '10px', color: '#475569', fontWeight: 500, whiteSpace: 'nowrap' }}>Requirement Quality</span>
+                  <div style={{ display: 'flex', gap: '3px' }}>
+                    <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#16a34a' }}></div>
+                    <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#16a34a' }}></div>
+                    <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#d97706' }}></div>
+                    <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#d97706' }}></div>
+                    <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#dc2626' }}></div>
                   </div>
-                  <BadgeCheck className="size-6 text-emerald-600" />
-                </div>
-                <div className="space-y-3 text-sm">
-                  <div className="rounded-md border border-slate-200 bg-white p-3">
-                    <p className="font-semibold text-slate-900">User Story</p>
-                    <p className="mt-1 leading-6 text-slate-600">As an operations coordinator, I want delay alerts so I can act before customers contact support.</p>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-md border border-slate-200 bg-white p-3">
-                      <p className="font-semibold text-slate-900">Acceptance Criteria</p>
-                      <p className="mt-1 leading-6 text-slate-600">Given / When / Then checks for delay threshold, recipient, and notification timing.</p>
-                    </div>
-                    <div className="rounded-md border border-slate-200 bg-white p-3">
-                      <p className="font-semibold text-slate-900">Traceability</p>
-                      <p className="mt-1 leading-6 text-slate-600">Links business need, story, AC, test scenario, and UAT sign-off.</p>
-                    </div>
-                  </div>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#d97706' }}>65%</span>
                 </div>
               </div>
-              <p className="mt-3 text-xs leading-5 text-slate-500">Preview only. Open the dashboard to generate complete BA documentation.</p>
+
+              <div style={{ padding: '10px 14px' }}>
+
+                {/* Raw requirement */}
+                <div style={{ background: '#f8fafc', borderRadius: '7px', padding: '8px 10px', marginBottom: '7px', borderLeft: '3px solid #d97706' }}>
+                  <p style={{ fontSize: '9px', color: '#d97706', fontWeight: 700, letterSpacing: '0.5px', margin: '0 0 3px' }}>RAW REQUIREMENT</p>
+                  <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 6px', fontStyle: 'italic', lineHeight: 1.4 }}>&quot;Operations team must be notified when a delivery is delayed.&quot;</p>
+                  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '9px', background: '#dcfce7', color: '#16a34a', borderRadius: '4px', padding: '1px 6px', fontWeight: 500 }}>✓ Actor</span>
+                    <span style={{ fontSize: '9px', background: '#dcfce7', color: '#16a34a', borderRadius: '4px', padding: '1px 6px', fontWeight: 500 }}>✓ Trigger</span>
+                    <span style={{ fontSize: '9px', background: '#fee2e2', color: '#dc2626', borderRadius: '4px', padding: '1px 6px', fontWeight: 500 }}>✗ Channel?</span>
+                    <span style={{ fontSize: '9px', background: '#fee2e2', color: '#dc2626', borderRadius: '4px', padding: '1px 6px', fontWeight: 500 }}>✗ Threshold?</span>
+                    <span style={{ fontSize: '9px', background: '#fef3c7', color: '#d97706', borderRadius: '4px', padding: '1px 6px', fontWeight: 500 }}>△ Frequency?</span>
+                  </div>
+                </div>
+
+                {/* Arrow */}
+                <div style={{ textAlign: 'center', marginBottom: '7px', lineHeight: 1 }}>
+                  <span style={{ fontSize: '9px', color: '#94a3b8' }}>BA Copilot generates  </span>
+                  <span style={{ fontSize: '13px', color: '#0d9488' }}>↓</span>
+                </div>
+
+                {/* 3x2 output grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '5px', marginBottom: '7px' }}>
+
+                  <div style={{ background: '#f8fafc', borderRadius: '6px', padding: '7px 8px', border: '0.5px solid #e2e8f0' }}>
+                    <p style={{ fontSize: '9px', color: '#0d9488', fontWeight: 700, letterSpacing: '0.3px', margin: '0 0 3px' }}>USER STORY</p>
+                    <p style={{ fontSize: '10px', color: '#1e293b', margin: 0, lineHeight: 1.4 }}>As an ops coordinator, I want delay alerts so I act before customers call.</p>
+                  </div>
+
+                  <div style={{ background: '#f8fafc', borderRadius: '6px', padding: '7px 8px', border: '0.5px solid #e2e8f0' }}>
+                    <p style={{ fontSize: '9px', color: '#0d9488', fontWeight: 700, letterSpacing: '0.3px', margin: '0 0 3px' }}>ACCEPTANCE CRITERIA</p>
+                    <p style={{ fontSize: '10px', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                      <span style={{ color: '#94a3b8' }}>Given</span> delay &gt;2hrs, <span style={{ color: '#94a3b8' }}>When</span> detected, <span style={{ color: '#94a3b8' }}>Then</span> alert in 5 min
+                    </p>
+                  </div>
+
+                  <div style={{ background: '#f8fafc', borderRadius: '6px', padding: '7px 8px', border: '0.5px solid #e2e8f0' }}>
+                    <p style={{ fontSize: '9px', color: '#dc2626', fontWeight: 700, letterSpacing: '0.3px', margin: '0 0 3px' }}>RISKS</p>
+                    <p style={{ fontSize: '10px', color: '#64748b', margin: 0, lineHeight: 1.4 }}>⚠ Delay threshold undefined in system</p>
+                  </div>
+
+                  <div style={{ background: '#f8fafc', borderRadius: '6px', padding: '7px 8px', border: '0.5px solid #e2e8f0' }}>
+                    <p style={{ fontSize: '9px', color: '#16a34a', fontWeight: 700, letterSpacing: '0.3px', margin: '0 0 3px' }}>TEST SCENARIO</p>
+                    <p style={{ fontSize: '10px', color: '#64748b', margin: 0, lineHeight: 1.4 }}>✓ Delay 2hr 01min → alert fires in 5 min</p>
+                  </div>
+
+                  <div style={{ background: '#f8fafc', borderRadius: '6px', padding: '7px 8px', border: '0.5px solid #e2e8f0' }}>
+                    <p style={{ fontSize: '9px', color: '#d97706', fontWeight: 700, letterSpacing: '0.3px', margin: '0 0 3px' }}>STAKEHOLDER Q</p>
+                    <p style={{ fontSize: '10px', color: '#64748b', margin: 0, lineHeight: 1.4 }}>? Notify via Email, SMS or in-app?</p>
+                  </div>
+
+                  <div style={{ background: '#f8fafc', borderRadius: '6px', padding: '7px 8px', border: '0.5px solid #e2e8f0' }}>
+                    <p style={{ fontSize: '9px', color: '#0d9488', fontWeight: 700, letterSpacing: '0.3px', margin: '0 0 3px' }}>TRACEABILITY</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                      <span style={{ fontSize: '9px', background: '#f0fdfa', color: '#0d9488', borderRadius: '3px', padding: '1px 5px' }}>Story</span>
+                      <span style={{ fontSize: '9px', color: '#94a3b8' }}>→</span>
+                      <span style={{ fontSize: '9px', background: '#dcfce7', color: '#16a34a', borderRadius: '3px', padding: '1px 5px' }}>Criteria ✓</span>
+                      <span style={{ fontSize: '9px', color: '#94a3b8' }}>→</span>
+                      <span style={{ fontSize: '9px', background: '#fef3c7', color: '#d97706', borderRadius: '3px', padding: '1px 5px' }}>UAT pending</span>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Dependency Impact — heading on line 1, chain on line 2 */}
+                <div style={{ border: '0.5px solid #d97706', borderRadius: '6px', padding: '7px 10px', background: '#fffbeb' }}>
+                  <p style={{ fontSize: '9px', color: '#d97706', fontWeight: 700, margin: '0 0 5px', whiteSpace: 'nowrap' }}>⚠ Dependency Impact — If threshold changes:</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap' }}>
+                    <span style={{ fontSize: '9px', background: 'white', border: '0.5px solid #e5e7eb', borderRadius: '4px', padding: '1px 7px', color: '#111', whiteSpace: 'nowrap' }}>REQ-012</span>
+                    <span style={{ fontSize: '10px', color: '#9ca3af' }}>→</span>
+                    <span style={{ fontSize: '9px', background: 'white', border: '0.5px solid #e5e7eb', borderRadius: '4px', padding: '1px 7px', color: '#111', whiteSpace: 'nowrap' }}>3 Acceptance Criteria</span>
+                    <span style={{ fontSize: '10px', color: '#9ca3af' }}>→</span>
+                    <span style={{ fontSize: '9px', background: 'white', border: '0.5px solid #e5e7eb', borderRadius: '4px', padding: '1px 7px', color: '#111', whiteSpace: 'nowrap' }}>2 Test Scenarios</span>
+                    <span style={{ fontSize: '10px', color: '#9ca3af' }}>→</span>
+                    <span style={{ fontSize: '9px', background: 'white', border: '0.5px solid #e5e7eb', borderRadius: '4px', padding: '1px 7px', color: '#111', whiteSpace: 'nowrap' }}>UAT Sign-off</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Footer */}
+              <div style={{ background: '#f8fafc', padding: '5px 14px', borderTop: '0.5px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '10px', color: '#94a3b8' }}>6 of 10 sections shown</span>
+                <span style={{ fontSize: '10px', color: '#0d9488', cursor: 'pointer', fontWeight: 500 }}>Generate full package →</span>
+              </div>
+
             </div>
           </div>
         </div>
@@ -342,26 +418,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="quality" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Quality</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Designed for useful output, not generic text.</h2>
-            <p className="mt-4 text-sm leading-6 text-slate-600">
-              BA Copilot keeps the workflow grounded in document types, domains, project styles, traceability, and concrete examples so the output is easier to review and improve.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {["BRD and FRD structure", "User stories and acceptance criteria", "Coverage and traceability review", "Workspace history for reuse"].map((item) => (
-              <div key={item} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-                <CheckCircle2 className="mb-3 size-5 text-emerald-600" />
-                <p className="text-sm font-semibold text-slate-900">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="bg-slate-950 text-white">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="max-w-3xl">
@@ -378,7 +434,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-sm font-semibold">BA Copilot</p>
+              <Image src="/logo-footer.svg" alt="BA Copilot" width={120} height={30} />
               <p className="mt-1 text-sm text-slate-400">Your GenAI Co-Pilot for Business Analysis</p>
             </div>
             <p className="text-sm text-slate-400">© 2025 BA Copilot. All rights reserved.</p>
