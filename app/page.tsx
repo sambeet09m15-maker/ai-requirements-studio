@@ -216,7 +216,7 @@ function ParticleBackground() {
 }
 
 export default function Home() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
 
   return (
     <main className="min-h-screen bg-[#f7fafc] text-slate-950">
@@ -251,8 +251,8 @@ export default function Home() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-2">
-            {isSignedIn ? (
+          <div className="flex items-center gap-2" style={{ minHeight: "36px" }}>
+            {!isLoaded ? null : isSignedIn ? (
               <>
                 <Link href="/dashboard" style={{ color: "rgba(255,255,255,0.7)" }} className="rounded-md px-3 py-2 text-sm font-medium transition hover:text-white">
                   Dashboard
