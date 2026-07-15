@@ -627,6 +627,13 @@ export function HomePageClient() {
             <a href="/terms" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Terms of Service</a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
             <a href="/refund" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Refund Policy</a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
+            <a
+              href="mailto:sambeet09m15@gmail.com?subject=Refund Request - BA Copilot&body=Hi, I would like to request a refund. My registered email is:"
+              style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}
+            >
+              Request Refund or Cancellation
+            </a>
           </div>
         </div>
       </footer>
