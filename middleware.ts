@@ -7,6 +7,9 @@ const isPublicRoute = createRouteMatcher([
   "/concept-map(.*)", // knowledge tools — public for SEO
   "/requirement-autopsy(.*)",
   "/situation-guide(.*)",
+  "/privacy(.*)", // legal pages — public
+  "/terms(.*)",
+  "/refund(.*)",
   "/api/public(.*)", // any public API routes
 ]);
 

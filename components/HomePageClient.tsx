@@ -615,13 +615,18 @@ export function HomePageClient() {
             <div>
               <img src="/logo.svg" alt="bacopilot.ai" style={{ height: "26px", width: "auto", opacity: 0.9 }} />
               <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", margin: "4px 0 0" }}>Your GenAI Copilot for Business Analysis</p>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.45)", marginTop: "8px" }}>
+                sambeet09m15@gmail.com
+              </p>
             </div>
             <p className="text-sm text-slate-400">© 2025 BA Copilot. All rights reserved.</p>
           </div>
           <div className="flex gap-2 text-sm text-slate-400">
-            <a href="#" className="transition hover:text-white">Privacy Policy</a>
-            <span>·</span>
-            <a href="#" className="transition hover:text-white">Terms</a>
+            <a href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Privacy Policy</a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
+            <a href="/terms" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Terms of Service</a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
+            <a href="/refund" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Refund Policy</a>
           </div>
         </div>
       </footer>
