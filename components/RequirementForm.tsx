@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SearchCheck, WandSparkles } from "lucide-react";
+import { WandSparkles } from "lucide-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,9 +10,9 @@ import { DomainSelect } from "@/components/DomainSelect";
 import { DocumentTypeSelect } from "@/components/DocumentTypeSelect";
 import { ProjectTypeSelect } from "@/components/ProjectTypeSelect";
 import { WorkspaceSelect } from "@/components/WorkspaceSelect";
+import { QualityIndicator } from "@/components/QualityIndicator";
 import { DEFAULT_WORKSPACE } from "@/lib/workspaceStorage";
 import type { DocumentType, Domain, GeneratePayload, ProjectType } from "@/lib/llm";
-import type { RequirementQuality } from "@/lib/llm";
 
 export function RequirementForm({
   onGenerate,
@@ -30,30 +30,7 @@ export function RequirementForm({
   const [domain, setDomain] = useState<Domain>(restoredPayload?.domain || "Generic");
   const [projectType, setProjectType] = useState<ProjectType>(restoredPayload?.projectType || "New Feature");
   const [documentType, setDocumentType] = useState<DocumentType>(restoredPayload?.documentType || "Full Requirements Package");
-  const [quality, setQuality] = useState<RequirementQuality | null>(null);
-  const [qualityLoading, setQualityLoading] = useState(false);
-  const [qualityError, setQualityError] = useState("");
   const { isSignedIn } = useUser();
-
-  async function checkQuality() {
-    if (!requirement.trim()) return;
-    setQualityLoading(true);
-    setQualityError("");
-    try {
-      const response = await fetch("/api/quality", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requirement }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Quality check failed.");
-      setQuality(data.quality);
-    } catch (error) {
-      setQualityError(error instanceof Error ? error.message : "Quality check failed.");
-    } finally {
-      setQualityLoading(false);
-    }
-  }
 
   return (
     <Card className="rounded-lg border-slate-200 bg-white shadow-sm">
@@ -63,19 +40,6 @@ export function RequirementForm({
       <CardContent className="space-y-5">
         <div className="space-y-2">
           <label className="text-sm font-medium">Raw business requirement</label>
-          {quality ? (
-            <div className="rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-950">
-              <div className="font-medium">{quality.label}</div>
-              {quality.suggestions.length ? (
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-xs leading-5 text-blue-900">
-                  {quality.suggestions.map((suggestion) => (
-                    <li key={suggestion}>{suggestion}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          ) : null}
-          {qualityError ? <p className="rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-900">{qualityError}</p> : null}
           <Textarea
             className="min-h-44 resize-none border-slate-200 bg-slate-50 focus-visible:ring-indigo-300"
             value={requirement}
@@ -85,6 +49,7 @@ export function RequirementForm({
           {showGuidance ? (
             <p className="text-xs leading-5 text-slate-500">Include the user goal, business rule, system action, or known constraint. Rough notes are fine.</p>
           ) : null}
+          {requirement.trim().length > 20 && <QualityIndicator requirement={requirement} />}
         </div>
         <div className="grid gap-4">
           <div id="workspace-field" className="space-y-2 rounded-md border border-slate-100 bg-slate-50/60 p-3">
@@ -134,10 +99,6 @@ export function RequirementForm({
             </Button>
           </SignInButton>
         )}
-        <Button type="button" variant="outline" className="h-10 w-full" disabled={qualityLoading || !requirement.trim()} onClick={checkQuality}>
-          <SearchCheck className="size-4" />
-          {qualityLoading ? "Checking" : "Check Quality"}
-        </Button>
       </CardContent>
     </Card>
   );

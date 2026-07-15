@@ -25,10 +25,8 @@ export type GeneratePayload = {
   documentType: DocumentType;
   section?: keyof RequirementsResult;
 };
-export type RequirementQuality = {
-  label: "Strong" | "Needs more detail" | "Too vague";
-  suggestions: string[];
-};
+export type QualityCriterionStatus = "present" | "partial" | "missing";
+export type RawQualityCriterion = { name?: unknown; status?: unknown; note?: unknown };
 
 function getClient() {
   if (!process.env.OPENAI_API_KEY) {
@@ -60,10 +58,10 @@ const keysByDocumentType: Record<DocumentType, (keyof RequirementsResult)[]> = {
   ],
 };
 
-async function requestJson(system: string, user: string) {
+async function requestJson(system: string, user: string, temperature = 0.2) {
   const response = await getClient().chat.completions.create({
     model: "gpt-4o-mini",
-    temperature: 0.2,
+    temperature,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: system },
@@ -104,17 +102,19 @@ export async function generateRequirements(payload: GeneratePayload): Promise<Re
   return pickDocumentSections(data, keys);
 }
 
-export async function checkRequirementQuality(requirement: string): Promise<RequirementQuality> {
-  const system = "Act as a senior Business Analyst. Return ONLY valid JSON shaped as {\"label\":\"Strong|Needs more detail|Too vague\",\"suggestions\":[\"string\"]}. Give at most 3 concise suggestions.";
-  const user = [
-    "Check this raw requirement for vague language such as fast, user-friendly, easy, simple, or efficient without a metric.",
-    "Also flag missing specifics such as no actor, no clear trigger, no measurable outcome, or no business rule.",
-    `Raw requirement: ${requirement}`,
+export async function checkRequirementQualityCriteria(requirement: string): Promise<{ criteria: RawQualityCriterion[] }> {
+  const system = [
+    "You are a senior Business Analyst reviewing a single raw requirement.",
+    "First, decide which quality criteria are RELEVANT to this specific requirement.",
+    "Always include 'Actor' and 'Outcome'.",
+    "Then choose 2 to 5 more from ONLY what genuinely applies, e.g.: Trigger, Channel, Threshold, Frequency, Data Source, Error Handling, Permissions, Performance, Scope.",
+    "Do NOT include criteria that make no sense for this requirement type.",
+    "Return ONLY JSON:",
+    '{"criteria": [{ "name": string, "status": "present"|"partial"|"missing", "note": string (max 12 words, only needed for partial/missing) }]}',
+    "Between 4 and 7 criteria total.",
+    "Judge strictly: 'present' only if explicitly stated in the text, 'partial' if implied or vague, 'missing' if absent.",
   ].join(" ");
-  const data = await requestJson(system, user);
-  const labels = ["Strong", "Needs more detail", "Too vague"];
-  return {
-    label: labels.includes(data.label) ? data.label : "Needs more detail",
-    suggestions: Array.isArray(data.suggestions) ? data.suggestions.slice(0, 3).map(String) : [],
-  };
+  const user = `Raw requirement: ${requirement}`;
+  const data = await requestJson(system, user, 0);
+  return { criteria: Array.isArray(data?.criteria) ? data.criteria : [] };
 }
