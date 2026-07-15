@@ -232,8 +232,11 @@ export default function Home() {
         }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3">
-            <img src="/logo.svg" alt="bacopilot.ai" style={{ height: "48px", width: "auto", minWidth: "160px" }} />
+          <Link href="/" className="flex flex-col items-start">
+            <img src="/logo.svg" alt="bacopilot.ai" style={{ height: "36px", width: "auto" }} />
+            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.55)", margin: 0, letterSpacing: "0.3px" }}>
+              Your GenAI Co-Pilot for Business Analysis
+            </p>
           </Link>
 
           <nav className="hidden items-center gap-2 text-sm font-medium md:flex">
@@ -600,7 +603,7 @@ export default function Home() {
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <img src="/logo.svg" alt="bacopilot.ai" style={{ height: "26px", width: "auto", opacity: 0.9 }} />
-              <p className="mt-1 text-sm text-slate-400">Your GenAI Co-Pilot for Business Analysis</p>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", margin: "4px 0 0" }}>Your GenAI Co-Pilot for Business Analysis</p>
             </div>
             <p className="text-sm text-slate-400">© 2025 BA Copilot. All rights reserved.</p>
           </div>
