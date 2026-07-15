@@ -251,7 +251,7 @@ export default function Home() {
                 </div>
                 <div className="flex min-h-[210px] flex-col items-center justify-center gap-2 bg-slate-50 p-5">
                   <img src="/logo-dark.svg" alt="bacopilot.ai" style={{ height: "60px", width: "auto", marginBottom: "8px" }} />
-                  <p style={{ fontSize: "13px", color: "rgba(15,23,42,0.65)", textAlign: "center", margin: 0 }}>Your GenAI Co-Pilot for Business Analysis</p>
+                  <p style={{ fontSize: "13px", color: "rgba(15,23,42,0.65)", textAlign: "center", margin: 0 }}>Your GenAI Copilot for Business Analysis</p>
                 </div>
               </div>
             </div>
