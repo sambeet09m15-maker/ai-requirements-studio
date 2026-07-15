@@ -3,6 +3,13 @@ import Image from "next/image";
 import { ArrowLeft, ScanSearch } from "lucide-react";
 import { RequirementAutopsy } from "@/components/RequirementAutopsy";
 
+export const metadata = {
+  title: "Requirement Autopsy — BA Worked Example for Logistics & Supply Chain",
+  description:
+    "See a complete Business Analysis worked example: one real logistics requirement broken down through every BA technique — Gap Analysis, MoSCoW, INVEST, User Story, Acceptance Criteria, RACI, and UAT.",
+  alternates: { canonical: "https://www.bacopilot.ai/requirement-autopsy" },
+};
+
 export default function RequirementAutopsyPage() {
   return (
     <main className="min-h-screen bg-[#f6f8fb] px-4 py-5 sm:px-7 lg:px-9">

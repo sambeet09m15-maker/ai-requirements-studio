@@ -3,6 +3,13 @@ import Image from "next/image";
 import { ArrowLeft, CircleHelp } from "lucide-react";
 import { SituationGuide } from "@/components/SituationGuide";
 
+export const metadata = {
+  title: "BA Situation Guide — What To Do When You Are Stuck",
+  description:
+    "Real Business Analyst questions answered with practical step-by-step guidance. 11 situations covering requirements, stakeholders, Agile ceremonies, and documentation. Your BA guide for mid-project problems.",
+  alternates: { canonical: "https://www.bacopilot.ai/situation-guide" },
+};
+
 export default function SituationGuidePage() {
   return (
     <main className="min-h-screen bg-[#f6f8fb] px-4 py-5 sm:px-7 lg:px-9">

@@ -3,6 +3,13 @@ import Image from "next/image";
 import { ArrowLeft, Network } from "lucide-react";
 import { ConceptMap } from "@/components/ConceptMap";
 
+export const metadata = {
+  title: "BA Concept Map — Interactive SDLC and Business Analysis Concepts",
+  description:
+    "Explore an interactive Business Analysis concept map showing all 56 BA concepts across 8 SDLC phases — from Project Planning to Production Support. Click any node to learn more.",
+  alternates: { canonical: "https://www.bacopilot.ai/concept-map" },
+};
+
 export default function ConceptMapPage() {
   return (
     <main className="min-h-screen bg-[#f6f8fb] px-4 py-5 sm:px-7 lg:px-9">
