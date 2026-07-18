@@ -2,12 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ScanSearch } from "lucide-react";
 import { RequirementAutopsy } from "@/components/RequirementAutopsy";
+import { BrandLogo } from "@/components/BrandLogo";
+import { APP_URL } from "@/lib/brand";
 
 export const metadata = {
   title: "Requirement Autopsy — BA Worked Example for Logistics & Supply Chain",
   description:
     "See a complete Business Analysis worked example: one real logistics requirement broken down through every BA technique — Gap Analysis, MoSCoW, INVEST, User Story, Acceptance Criteria, RACI, and UAT.",
-  alternates: { canonical: "https://www.bacopilot.ai/requirement-autopsy" },
+  alternates: { canonical: `${APP_URL}/requirement-autopsy` },
 };
 
 export default function RequirementAutopsyPage() {
@@ -20,10 +22,7 @@ export default function RequirementAutopsyPage() {
               <span className="flex size-11 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white">
                 <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={44} height={44} className="size-11 object-cover" priority />
               </span>
-              <span>
-                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">BA Copilot</span>
-                <span className="block text-lg font-semibold text-slate-950">BA Copilot</span>
-              </span>
+              <BrandLogo size="md" theme="light" href={null} />
             </Link>
             <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
               <ArrowLeft className="size-4" />

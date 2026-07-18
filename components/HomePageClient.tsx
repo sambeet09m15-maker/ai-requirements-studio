@@ -3,6 +3,8 @@
 import { Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
+import { BrandLogo } from "@/components/BrandLogo";
+import { APP_NAME } from "@/lib/brand";
 import {
   ArrowRight,
   BookOpenText,
@@ -232,23 +234,7 @@ export function HomePageClient() {
         }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="flex flex-col items-start">
-            <img src="/logo.svg" alt="bacopilot.ai" style={{ height: "36px", width: "auto" }} />
-            <p
-              style={{
-                fontSize: "10px",
-                color: "rgba(255,255,255,0.55)",
-                margin: 0,
-                letterSpacing: "0.3px",
-                maxWidth: "257px",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              Your GenAI Copilot for Business Analysis
-            </p>
-          </Link>
+          <BrandLogo size="md" theme="dark" mark={{ src: "/logo.svg", height: 36 }} />
 
           <nav className="hidden items-center gap-2 text-sm font-medium md:flex">
             <a href="#features" style={{ color: "rgba(255,255,255,0.7)" }} className="rounded-md px-3 py-2 transition hover:bg-white/5 hover:text-white">
@@ -415,7 +401,7 @@ export function HomePageClient() {
                 </div>
 
                 {/* Arrow */}
-                <div style={{ textAlign: 'center', fontSize: '9.9px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>BA Copilot generates ↓</div>
+                <div style={{ textAlign: 'center', fontSize: '9.9px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>{APP_NAME} generates ↓</div>
 
                 {/* 3x2 grid */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px', marginBottom: '6px' }}>
@@ -613,13 +599,12 @@ export function HomePageClient() {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <img src="/logo.svg" alt="bacopilot.ai" style={{ height: "26px", width: "auto", opacity: 0.9 }} />
-              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", margin: "4px 0 0" }}>Your GenAI Copilot for Business Analysis</p>
+              <BrandLogo size="sm" theme="dark" href={null} mark={{ src: "/logo.svg", height: 26 }} className="opacity-90" />
               <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.45)", marginTop: "8px" }}>
                 sambeet09m15@gmail.com
               </p>
             </div>
-            <p className="text-sm text-slate-400">© 2025 BA Copilot. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2025 {APP_NAME}. All rights reserved.</p>
           </div>
           <div className="flex gap-2 text-sm text-slate-400">
             <a href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Privacy Policy</a>
@@ -629,7 +614,7 @@ export function HomePageClient() {
             <a href="/refund" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Refund Policy</a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
             <a
-              href="mailto:sambeet09m15@gmail.com?subject=Refund Request - BA Copilot&body=Hi, I would like to request a refund. My registered email is:"
+              href={`mailto:sambeet09m15@gmail.com?subject=Refund Request - ${APP_NAME}&body=Hi, I would like to request a refund. My registered email is:`}
               style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}
             >
               Request Refund or Cancellation

@@ -7,6 +7,7 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
 import { readHistory } from "@/lib/historyStorage";
 import { readWorkspaces } from "@/lib/workspaceStorage";
+import { APP_NAME } from "@/lib/brand";
 
 const GENERATE_LIMIT = 5;
 
@@ -156,7 +157,7 @@ export default function ProfilePage() {
               </button>
             </div>
             <a
-              href="mailto:sambeet09m15@gmail.com?subject=Refund Request - BA Copilot&body=Hi, I would like to request a refund. My registered email is:"
+              href={`mailto:sambeet09m15@gmail.com?subject=Refund Request - ${APP_NAME}&body=Hi, I would like to request a refund. My registered email is:`}
               style={{ fontSize: "12px", color: "#64748b", textDecoration: "underline", display: "block", textAlign: "center", marginTop: "12px" }}
             >
               Request Refund or Cancellation

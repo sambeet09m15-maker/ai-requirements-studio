@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
+import { APP_URL } from "@/lib/brand";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://www.bacopilot.ai";
+  const baseUrl = APP_URL;
   const lastModified = new Date();
 
   return [

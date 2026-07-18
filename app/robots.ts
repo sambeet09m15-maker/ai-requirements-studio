@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { APP_URL } from "@/lib/brand";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/"],
     },
-    sitemap: "https://www.bacopilot.ai/sitemap.xml",
+    sitemap: `${APP_URL}/sitemap.xml`,
   };
 }

@@ -1,6 +1,10 @@
+import { APP_NAME, APP_URL } from "@/lib/brand";
+
+const APP_DOMAIN = new URL(APP_URL).hostname.replace(/^www\./, "");
+
 export const metadata = {
   title: "Privacy Policy",
-  description: "Privacy Policy for BA Copilot - how we collect, use and protect your data.",
+  description: `Privacy Policy for ${APP_NAME} - how we collect, use and protect your data.`,
 };
 
 export default function PrivacyPolicy() {
@@ -10,10 +14,10 @@ export default function PrivacyPolicy() {
       <p style={{ color: "#64748b", marginBottom: "40px" }}>Last updated: July 2025</p>
 
       <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: "32px" }}>1. Who We Are</h2>
-      <p>BA Copilot (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is an AI-powered Business Analysis productivity tool available at bacopilot.ai. We are operated by an individual developer based in India.</p>
+      <p>{APP_NAME} (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is an AI-powered Business Analysis productivity tool available at {APP_DOMAIN}. We are operated by an individual developer based in India.</p>
 
       <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: "32px" }}>2. What Data We Collect</h2>
-      <p>We collect the following information when you use BA Copilot:</p>
+      <p>We collect the following information when you use {APP_NAME}:</p>
       <ul style={{ paddingLeft: "24px", marginTop: "8px" }}>
         <li><strong>Account information</strong> — your name and email address when you sign up via Google or email through Clerk.</li>
         <li><strong>Usage data</strong> — the requirements you paste into the tool for AI processing, document generation count, and workspace data stored in your browser.</li>
@@ -22,7 +26,7 @@ export default function PrivacyPolicy() {
 
       <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: "32px" }}>3. How We Use Your Data</h2>
       <ul style={{ paddingLeft: "24px", marginTop: "8px" }}>
-        <li>To provide and improve the BA Copilot service</li>
+        <li>To provide and improve the {APP_NAME} service</li>
         <li>To generate AI-powered BA documentation from your requirements</li>
         <li>To manage your account and subscription</li>
         <li>To send important service updates (no marketing emails without consent)</li>

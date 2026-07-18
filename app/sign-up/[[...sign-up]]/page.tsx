@@ -1,8 +1,10 @@
 import { SignUp } from "@clerk/nextjs";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0F172A] flex flex-col items-center justify-center gap-8">
+      <BrandLogo size="lg" theme="dark" align="center" />
       <SignUp
         appearance={{
           elements: {

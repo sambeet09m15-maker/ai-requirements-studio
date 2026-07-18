@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { APP_NAME, APP_TAGLINE, APP_URL } from "@/lib/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.bacopilot.ai"),
+  metadataBase: new URL(APP_URL),
   title: {
-    default: "BA Copilot — AI-Powered Business Analyst Tool | Free User Stories & Requirements",
-    template: "%s | BA Copilot",
+    default: `${APP_NAME} — ${APP_TAGLINE}`,
+    template: `%s | ${APP_NAME}`,
   },
   description:
-    "BA Copilot is a free AI-powered tool for Business Analysts. Auto-generate User Stories, Acceptance Criteria, BRD, FRD, Functional Requirements, Test Scenarios and more in seconds. Includes a free BA Knowledge Hub with 50+ concepts.",
+    `${APP_NAME} is a free AI-powered tool for Business Analysts. Auto-generate User Stories, Acceptance Criteria, BRD, FRD, Functional Requirements, Test Scenarios and more in seconds. Includes a free BA Knowledge Hub with 50+ concepts.`,
   keywords: [
     "business analyst tool",
     "AI requirements generator",
@@ -25,16 +26,16 @@ export const metadata: Metadata = {
     "agile business analyst",
     "Gherkin acceptance criteria",
     "MoSCoW prioritization",
-    "BA Copilot",
+    APP_NAME,
   ],
-  authors: [{ name: "BA Copilot" }],
-  creator: "BA Copilot",
+  authors: [{ name: APP_NAME }],
+  creator: APP_NAME,
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://www.bacopilot.ai",
-    siteName: "BA Copilot",
-    title: "BA Copilot — Your GenAI Co-Pilot for Business Analysis",
+    url: APP_URL,
+    siteName: APP_NAME,
+    title: `${APP_NAME} — ${APP_TAGLINE}`,
     description:
       "Learn BA skills and auto-generate user stories, requirements, acceptance criteria, use cases, and documentation in one AI-powered hub.",
     images: [
@@ -42,13 +43,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "BA Copilot — AI-Powered Business Analyst Tool",
+        alt: `${APP_NAME} — AI-Powered Business Analyst Tool`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BA Copilot — Your GenAI Co-Pilot for Business Analysis",
+    title: `${APP_NAME} — ${APP_TAGLINE}`,
     description: "Auto-generate User Stories, Acceptance Criteria, BRD, FRD and more in seconds. Free BA Knowledge Hub included.",
     images: ["/og-image.png"],
   },
@@ -64,7 +65,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://www.bacopilot.ai",
+    canonical: APP_URL,
   },
 };
 

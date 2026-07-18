@@ -13,6 +13,8 @@ import { KnowledgeArtifacts } from "@/components/KnowledgeArtifacts";
 import { HistoryPanel } from "@/components/HistoryPanel";
 import { OnboardingTour, replayTour } from "@/components/OnboardingTour";
 import { WorkspaceList } from "@/components/WorkspaceList";
+import { BrandLogo } from "@/components/BrandLogo";
+import { APP_NAME } from "@/lib/brand";
 import { saveHistoryEntry, type AnalysisHistoryEntry } from "@/lib/historyStorage";
 import { DEFAULT_WORKSPACE } from "@/lib/workspaceStorage";
 import type { DocumentType, GeneratePayload, RequirementsResult } from "@/lib/llm";
@@ -124,7 +126,7 @@ export default function Home() {
               <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={48} height={48} className="size-12 object-cover" priority />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-white">BA Copilot</h1>
+              <h1 className="text-xl font-semibold text-white">{APP_NAME}</h1>
             </div>
           </div>
           <nav className="mt-9 space-y-1 text-sm">
@@ -184,9 +186,7 @@ export default function Home() {
                   <span className="flex size-11 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white">
                     <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={44} height={44} className="size-11 object-cover" priority />
                   </span>
-                  <span>
-                    <span className="block text-lg font-semibold text-slate-950">BA Copilot</span>
-                  </span>
+                  <BrandLogo size="md" theme="light" href={null} />
                 </a>
                 <nav className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-600">
                   <button type="button" onClick={() => setAboutOpen(true)} className="rounded-md px-3 py-2 transition hover:bg-slate-100 hover:text-slate-950">About Application</button>
@@ -208,7 +208,7 @@ export default function Home() {
                   About Application
                 </div>
                 <p>
-                  BA Copilot helps business analysts turn raw business input into structured requirements, supporting documents,
+                  {APP_NAME} helps business analysts turn raw business input into structured requirements, supporting documents,
                   traceability mapping, and reusable BA knowledge artifacts in one focused workspace.
                 </p>
               </div>
@@ -250,8 +250,14 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex min-h-[210px] flex-col items-center justify-center gap-2 bg-slate-50 p-5">
-                  <img src="/logo-dark.svg" alt="bacopilot.ai" style={{ height: "60px", width: "auto", marginBottom: "8px" }} />
-                  <p style={{ fontSize: "13px", color: "rgba(15,23,42,0.65)", textAlign: "center", margin: 0 }}>Your GenAI Copilot for Business Analysis</p>
+                  <BrandLogo
+                    size="lg"
+                    theme="light"
+                    href={null}
+                    align="center"
+                    className="mb-2"
+                    mark={{ src: "/logo-dark.svg", height: 60 }}
+                  />
                 </div>
               </div>
             </div>

@@ -1,6 +1,8 @@
+import { APP_NAME } from "@/lib/brand";
+
 export const metadata = {
   title: "Refund & Cancellation Policy",
-  description: "Refund and cancellation policy for BA Copilot Pro subscriptions.",
+  description: `Refund and cancellation policy for ${APP_NAME} Pro subscriptions.`,
 };
 
 export default function RefundPolicy() {

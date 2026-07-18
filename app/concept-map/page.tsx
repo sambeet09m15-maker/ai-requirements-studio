@@ -2,12 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Network } from "lucide-react";
 import { ConceptMap } from "@/components/ConceptMap";
+import { BrandLogo } from "@/components/BrandLogo";
+import { APP_URL } from "@/lib/brand";
 
 export const metadata = {
   title: "BA Concept Map — Interactive SDLC and Business Analysis Concepts",
   description:
     "Explore an interactive Business Analysis concept map showing all 56 BA concepts across 8 SDLC phases — from Project Planning to Production Support. Click any node to learn more.",
-  alternates: { canonical: "https://www.bacopilot.ai/concept-map" },
+  alternates: { canonical: `${APP_URL}/concept-map` },
 };
 
 export default function ConceptMapPage() {
@@ -20,10 +22,7 @@ export default function ConceptMapPage() {
               <span className="flex size-11 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white">
                 <Image src="/ba-knowledge-hub-logo.png" alt="BA Knowledge Hub logo" width={44} height={44} className="size-11 object-cover" priority />
               </span>
-              <span>
-                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">BA Copilot</span>
-                <span className="block text-lg font-semibold text-slate-950">BA Copilot</span>
-              </span>
+              <BrandLogo size="md" theme="light" href={null} />
             </Link>
             <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
               <ArrowLeft className="size-4" />
