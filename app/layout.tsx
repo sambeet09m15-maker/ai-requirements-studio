@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 import { APP_NAME, APP_TAGLINE, APP_URL } from "@/lib/brand";
 import "./globals.css";
 
@@ -10,15 +11,17 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description:
-    `${APP_NAME} is a free AI-powered tool for Business Analysts. Auto-generate User Stories, Acceptance Criteria, BRD, FRD, Functional Requirements, Test Scenarios and more in seconds. Includes a free BA Knowledge Hub with 50+ concepts.`,
+    `Practice business analysis skills with instant AI feedback. ${APP_NAME} is a free learning tool for BA students and professionals — practice writing User Stories, Acceptance Criteria, BRD, FRD, Test Scenarios and more, with a free BA Knowledge Hub of 50+ concepts.`,
   keywords: [
-    "business analyst tool",
+    "business analyst practice",
+    "learn business analysis",
+    "BA interview preparation",
     "AI requirements generator",
     "user story generator",
     "acceptance criteria generator",
     "BRD template",
     "FRD template",
-    "business analysis tool India",
+    "business analysis training",
     "free BA tool",
     "requirements document generator",
     "BA knowledge hub",
@@ -37,20 +40,20 @@ export const metadata: Metadata = {
     siteName: APP_NAME,
     title: `${APP_NAME} — ${APP_TAGLINE}`,
     description:
-      "Learn BA skills and auto-generate user stories, requirements, acceptance criteria, use cases, and documentation in one AI-powered hub.",
+      "Practice business analysis skills with instant AI feedback. Learn BA concepts and practice writing user stories, requirements, acceptance criteria, use cases, and documentation in one free AI-powered hub.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: `${APP_NAME} — AI-Powered Business Analyst Tool`,
+        alt: `${APP_NAME} — Free Learning Tool for Business Analysts`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${APP_NAME} — ${APP_TAGLINE}`,
-    description: "Auto-generate User Stories, Acceptance Criteria, BRD, FRD and more in seconds. Free BA Knowledge Hub included.",
+    description: "Practice business analysis skills with instant AI feedback. Free BA Knowledge Hub included.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -77,7 +80,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="h-full antialiased" suppressHydrationWarning>
-        <body className="min-h-full bg-background" suppressHydrationWarning>{children}</body>
+        <body className="min-h-full bg-background" suppressHydrationWarning>
+          {children}
+          <Analytics />
+        </body>
       </html>
     </ClerkProvider>
   );

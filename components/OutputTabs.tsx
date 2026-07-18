@@ -23,6 +23,7 @@ const sectionLabels: Record<keyof RequirementsResult, string> = {
 export function OutputTabs({
   result,
   error,
+  limitReached,
   documentType,
   activeTab,
   compactMode,
@@ -31,12 +32,22 @@ export function OutputTabs({
 }: {
   result: RequirementsResult | null;
   error: string;
+  limitReached?: boolean;
   documentType?: DocumentType;
   activeTab?: string;
   compactMode: boolean;
   onTabChange: (value: string) => void;
   onRegenerate: (section: keyof RequirementsResult, documentType: DocumentType) => void;
 }) {
+  if (limitReached) {
+    return (
+      <div className="rounded-lg border border-teal-200 bg-teal-50 p-5 text-center text-sm text-teal-900 shadow-sm">
+        <p className="font-semibold">You&apos;ve used today&apos;s 10 free runs — come back tomorrow!</p>
+        <p className="mt-1 text-teal-700">Your daily practice quota resets at midnight UTC.</p>
+      </div>
+    );
+  }
+
   if (error) {
     return <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border p-4 text-sm shadow-lg">{error}</div>;
   }

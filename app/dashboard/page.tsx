@@ -27,6 +27,8 @@ export default function Home() {
   const [showGuidance, setShowGuidance] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [limitReached, setLimitReached] = useState(false);
+  const [runsLeft, setRunsLeft] = useState<number | null>(null);
   const [selectedWorkspace, setSelectedWorkspace] = useState(DEFAULT_WORKSPACE);
   const [restoredPayload, setRestoredPayload] = useState<GeneratePayload | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -53,6 +55,7 @@ export default function Home() {
   async function generate(payload: GeneratePayload) {
     setLoading(true);
     setError("");
+    setLimitReached(false);
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -60,11 +63,16 @@ export default function Home() {
         body: JSON.stringify(payload),
       });
       const data = await response.json();
+      if (response.status === 429) {
+        setLimitReached(true);
+        return;
+      }
       if (!response.ok) {
         throw new Error(data.error || "Generation failed.");
       }
       setLastPayload(payload);
       setResult(data.requirements);
+      if (typeof data.runsLeft === "number") setRunsLeft(data.runsLeft);
       setSelectedWorkspace(payload.workspace || DEFAULT_WORKSPACE);
       saveHistoryEntry({ payload, result: data.requirements });
       setActiveTab(Object.keys(data.requirements || {})[0]);
@@ -250,14 +258,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex min-h-[210px] flex-col items-center justify-center gap-2 bg-slate-50 p-5">
-                  <BrandLogo
-                    size="lg"
-                    theme="light"
-                    href={null}
-                    align="center"
-                    className="mb-2"
-                    mark={{ src: "/logo-dark.svg", height: 60 }}
-                  />
+                  <BrandLogo size="lg" theme="light" href={null} align="center" className="mb-2" />
                 </div>
               </div>
             </div>
@@ -266,7 +267,15 @@ export default function Home() {
             </div>
             <div className="grid gap-5 xl:grid-cols-[390px_1fr]">
               <div id="requirements" className="scroll-mt-5 space-y-5">
-                <RequirementForm key={restoredPayload ? `${restoredPayload.requirement}-${restoredPayload.documentType}-${restoredPayload.workspace}` : "new-analysis"} onGenerate={generate} loading={loading} showGuidance={showGuidance} restoredPayload={restoredPayload} />
+                <RequirementForm
+                  key={restoredPayload ? `${restoredPayload.requirement}-${restoredPayload.documentType}-${restoredPayload.workspace}` : "new-analysis"}
+                  onGenerate={generate}
+                  loading={loading}
+                  showGuidance={showGuidance}
+                  restoredPayload={restoredPayload}
+                  runsLeft={runsLeft}
+                  onUsage={setRunsLeft}
+                />
               </div>
               <div id="output-tabs" ref={outputRef} className="min-w-0 scroll-mt-5">
                 {loading ? (
@@ -275,6 +284,7 @@ export default function Home() {
                   <OutputTabs
                     result={result}
                     error={error}
+                    limitReached={limitReached}
                     documentType={lastPayload?.documentType}
                     activeTab={activeTab}
                     compactMode={compactMode}

@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { analyzeRequirementQuality, criteriaToTags, streamRequirementRewrite } from "@/lib/quality";
+import { analyzeRequirementQuality, streamRequirementRewrite } from "@/lib/quality";
 
 // Public, unauthenticated route — see middleware.ts, which explicitly excludes
 // this path from Clerk's auth.protect().
 export const runtime = "nodejs";
+
+// The two-step analysis (Step A + Step B) plus the streamed rewrite can take
+// several seconds end-to-end. Vercel's default function duration is too short
+// for that on some plans, which silently truncates the stream mid-response —
+// give it real headroom.
+export const maxDuration = 30;
 
 const MAX_FREE_RUNS = 3;
 const MAX_LENGTH = 500;
@@ -44,14 +50,15 @@ export async function POST(request: NextRequest) {
   let analysis;
   try {
     analysis = await analyzeRequirementQuality(requirement);
-  } catch {
+  } catch (err) {
+    console.error("[demo-quality] analysis failed", err);
     return NextResponse.json(
       { error: "analysis_failed", message: "Something went wrong analyzing that. Please try again." },
       { status: 500 }
     );
   }
 
-  if (!analysis.criteria.length) {
+  if (!analysis.tags.length) {
     return NextResponse.json(
       { error: "analysis_failed", message: "Something went wrong analyzing that. Please try again." },
       { status: 500 }
@@ -61,7 +68,8 @@ export async function POST(request: NextRequest) {
   let rewriteStream;
   try {
     rewriteStream = await streamRequirementRewrite(requirement);
-  } catch {
+  } catch (err) {
+    console.error("[demo-quality] rewrite call failed to start", err);
     return NextResponse.json(
       { error: "analysis_failed", message: "Something went wrong generating a rewrite. Please try again." },
       { status: 500 }
@@ -75,8 +83,9 @@ export async function POST(request: NextRequest) {
   const header =
     JSON.stringify({
       score: analysis.score,
-      tags: criteriaToTags(analysis.criteria),
+      tags: analysis.tags,
       runsLeft,
+      type: analysis.type,
     }) + "\n";
 
   const encoder = new TextEncoder();
@@ -88,7 +97,8 @@ export async function POST(request: NextRequest) {
           const token = chunk.choices[0]?.delta?.content ?? "";
           if (token) controller.enqueue(encoder.encode(token));
         }
-      } catch {
+      } catch (err) {
+        console.error("[demo-quality] rewrite stream interrupted", err);
         controller.enqueue(encoder.encode("\n\n(The rewrite stopped early — please try again.)"));
       } finally {
         controller.close();

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { analyzeRequirementQuality } from "@/lib/quality";
+import { checkDailyLimit, consumeDailyRun } from "@/lib/limits";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as { requirement?: string };
@@ -12,14 +13,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Requirement is too long." }, { status: 400 });
   }
 
-  try {
-    const { score, criteria } = await analyzeRequirementQuality(requirement);
+  const limit = await checkDailyLimit();
+  if (!limit.ok) {
+    return NextResponse.json({ error: "limit", message: limit.message }, { status: 429 });
+  }
 
-    if (criteria.length < 1 || criteria.length > 7) {
+  try {
+    const { type, score, tags } = await analyzeRequirementQuality(requirement);
+
+    if (!tags.length) {
       return NextResponse.json({ error: "analysis_failed" }, { status: 200 });
     }
 
-    return NextResponse.json({ score, criteria });
+    const runsLeft = await consumeDailyRun();
+    return NextResponse.json({ type, score, tags, runsLeft });
   } catch {
     return NextResponse.json({ error: "analysis_failed" }, { status: 200 });
   }

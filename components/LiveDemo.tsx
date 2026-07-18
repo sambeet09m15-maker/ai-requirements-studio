@@ -5,7 +5,7 @@ import { SignUpButton } from "@clerk/nextjs";
 import { ArrowRight, Check, X } from "lucide-react";
 
 type Tag = { label: string; ok: boolean };
-type DemoHeader = { score: number; tags: Tag[]; runsLeft: number };
+type DemoHeader = { score: number; tags: Tag[]; runsLeft: number; type?: string };
 
 const EXAMPLE_REQUIREMENT = "The system should notify users quickly when an order fails.";
 const MAX_LENGTH = 500;
@@ -100,12 +100,14 @@ export function LiveDemo() {
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
+        if (value) buffer += decoder.decode(value, { stream: true });
 
         if (!headerParsed) {
           const newlineIndex = buffer.indexOf("\n");
-          if (newlineIndex === -1) continue;
+          if (newlineIndex === -1) {
+            if (done) break;
+            continue;
+          }
 
           const headerLine = buffer.slice(0, newlineIndex);
           const rest = buffer.slice(newlineIndex + 1);
@@ -125,11 +127,18 @@ export function LiveDemo() {
           }
 
           if (rest) setRewrite((prev) => prev + rest);
-        } else {
+        } else if (buffer) {
           setRewrite((prev) => prev + buffer);
           buffer = "";
         }
+
+        if (done) break;
       }
+
+      // Flush any bytes the decoder was still holding onto for a multi-byte
+      // sequence split across the final chunk boundary.
+      const tail = decoder.decode();
+      if (tail) setRewrite((prev) => prev + tail);
 
       setStreaming(false);
     } catch {
@@ -213,7 +222,9 @@ export function LiveDemo() {
           LIVE DEMO
         </span>
         {runsLeft !== null ? (
-          <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>{runsLeft} free runs left</span>
+          <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>
+            {runsLeft} free run{runsLeft === 1 ? "" : "s"} left
+          </span>
         ) : null}
       </div>
 
@@ -236,6 +247,9 @@ export function LiveDemo() {
             outline: "none",
           }}
         />
+        <p style={{ fontSize: "10.5px", color: "rgba(255,255,255,0.35)", marginTop: "6px", lineHeight: 1.5 }}>
+          Learning tool — practice with sample data. Please don&apos;t enter confidential or company information.
+        </p>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "8px", flexWrap: "wrap", gap: "8px" }}>
           <button

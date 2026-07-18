@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   // ("BA Copilot — Your GenAI Copilot for Business Analysis") so the
   // homepage doesn't get the "%s | BA Copilot" template appended twice.
   description:
-    `${APP_NAME} — ${APP_TAGLINE}. Learn BA skills and auto-generate user stories, requirements, acceptance criteria, use cases, and documentation in one AI-powered hub.`,
+    `Practice business analysis skills with instant AI feedback. ${APP_NAME} — ${APP_TAGLINE}. Practice writing user stories, requirements, acceptance criteria, use cases, and documentation in one free AI-powered hub.`,
   alternates: { canonical: APP_URL },
 };
 

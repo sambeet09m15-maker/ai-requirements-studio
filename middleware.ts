@@ -9,7 +9,6 @@ const isPublicRoute = createRouteMatcher([
   "/situation-guide(.*)",
   "/privacy(.*)", // legal pages — public
   "/terms(.*)",
-  "/refund(.*)",
   "/api/public(.*)", // any public API routes
   "/api/demo-quality(.*)", // unauthenticated live demo on the homepage — no sign-up required
 ]);

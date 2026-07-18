@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { BrandLogo } from "@/components/BrandLogo";
 import { LiveDemo } from "@/components/LiveDemo";
-import { APP_NAME } from "@/lib/brand";
+import { APP_NAME, CONTACT_EMAIL } from "@/lib/brand";
 import {
   ArrowRight,
   BookOpenText,
@@ -73,11 +73,11 @@ const tools = [
 
 const features = [
   {
-    title: "AI Requirements Generator",
+    title: "Practice AI Requirements Feedback",
     description:
-      "Paste any business requirement and get structured User Stories, Acceptance Criteria, BRD, FRD, Test Scenarios and more — in under 10 seconds. Domain-aware and coverage-checked.",
+      "Paste any business requirement and get structured User Stories, Acceptance Criteria, BRD, FRD, Test Scenarios and more — in under 10 seconds. A safe space to practice before you draft the real thing.",
     href: "/dashboard",
-    link: "Try it free →",
+    link: "Practice free →",
     icon: Zap,
   },
   {
@@ -91,7 +91,7 @@ const features = [
   {
     title: "Smart Workspaces",
     description:
-      "Organise requirements by project. Save every generated document with full history. Export to Word or PDF. Track coverage gaps across your entire requirement set.",
+      "Organise practice requirements by project. Save every generated document with full history. Export to Word or PDF. Track coverage gaps across your entire requirement set.",
     href: "/dashboard",
     link: "See how it works →",
     icon: Layers3,
@@ -102,7 +102,7 @@ const freeFeatures = [
   "Full BA Knowledge Hub",
   "Interactive Concept Map",
   "Situation Guide & Requirement Autopsy",
-  "5 AI generations per month",
+  "10 AI runs per day",
   "Quick User Story mode",
 ];
 
@@ -235,7 +235,7 @@ export function HomePageClient() {
         }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <BrandLogo size="md" theme="dark" mark={{ src: "/logo.svg", height: 36 }} />
+          <BrandLogo size="md" theme="dark" />
 
           <nav className="hidden items-center gap-2 text-sm font-medium md:flex">
             <a href="#features" style={{ color: "rgba(255,255,255,0.7)" }} className="rounded-md px-3 py-2 transition hover:bg-white/5 hover:text-white">
@@ -294,7 +294,7 @@ export function HomePageClient() {
             }}>
               <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#0d9488' }} />
               <span style={{ fontSize: '11px', color: '#0d9488', fontWeight: 500 }}>
-                AI-Powered · Built for Business Analysts
+                Free Learning Tool · Built for BA Students &amp; Professionals
               </span>
             </div>
 
@@ -307,8 +307,8 @@ export function HomePageClient() {
               letterSpacing: '-1px',
               marginBottom: '14px',
             }}>
-              One sentence in.<br />
-              <span style={{ color: '#0d9488' }}>Complete BA documentation</span> out.
+              Practice writing requirements<br />
+              <span style={{ color: '#0d9488' }}>like a senior BA.</span>
             </h1>
 
             {/* Subtitle */}
@@ -319,8 +319,9 @@ export function HomePageClient() {
               marginBottom: '24px',
               maxWidth: '380px',
             }}>
-              User Stories, Acceptance Criteria, BRD, FRD, Risks and Test Scenarios -
-              generated in under 10 seconds. Quality-scored. Dependency-tracked.
+              Paste a rough requirement and get instant AI feedback — quality scoring,
+              gap analysis, and a suggested rewrite. Built for skill-building and
+              interview preparation, free to use.
             </p>
 
             {/* Buttons */}
@@ -329,7 +330,7 @@ export function HomePageClient() {
                 background: '#0d9488', color: 'white', fontSize: '14px', fontWeight: 600,
                 padding: '11px 22px', borderRadius: '8px', textDecoration: 'none',
                 display: 'inline-block'
-              }}>Generate Free →</a>
+              }}>Start Practicing Free →</a>
               <a href="/concept-map" style={{
                 background: 'rgba(255,255,255,0.06)',
                 border: '1px solid rgba(255,255,255,0.1)',
@@ -346,10 +347,10 @@ export function HomePageClient() {
               paddingTop: '18px',
             }}>
               {[
-                { num: '10s', label: 'to generate full doc' },
+                { num: '10s', label: 'to get AI feedback' },
                 { num: '10', label: 'document types' },
-                { num: '56', label: 'BA concepts mapped' },
-                { num: 'Free', label: 'to start today' },
+                { num: '56', label: 'BA concepts to learn' },
+                { num: 'Free', label: 'to practice today' },
               ].map((s) => (
                 <div key={s.num} style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '18px', fontWeight: 800, color: '#0d9488' }}>{s.num}</div>
@@ -369,7 +370,7 @@ export function HomePageClient() {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Features</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Everything a BA needs to move from request to clarity.</h2>
+            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Everything you need to practice and learn BA skills.</h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {features.map((feature) => {
@@ -464,12 +465,12 @@ export function HomePageClient() {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">Pricing</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Start free, upgrade when your workflow grows.</h2>
+            <h2 className="mt-3 text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl">Free to practice, during beta.</h2>
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-2">
             <article className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">FREE</p>
-              <h3 className="mt-3 text-4xl font-semibold text-slate-950">₹0 <span className="text-base font-medium text-slate-500">/ forever</span></h3>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">FREE DURING BETA</p>
+              <h3 className="mt-3 text-4xl font-semibold text-slate-950">₹0 <span className="text-base font-medium text-slate-500">/ during beta</span></h3>
               <ul className="mt-6 space-y-3">
                 {freeFeatures.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 text-sm leading-6 text-slate-700">
@@ -484,9 +485,9 @@ export function HomePageClient() {
             </article>
 
             <article className="relative rounded-lg border border-cyan-500 bg-cyan-50 p-6 shadow-sm">
-              <span className="absolute right-5 top-5 rounded-md bg-cyan-700 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">Most Popular</span>
+              <span className="absolute right-5 top-5 rounded-md bg-cyan-700 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">Coming Soon</span>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-800">PRO</p>
-              <h3 className="mt-3 text-4xl font-semibold text-slate-950">₹599 <span className="text-base font-medium text-slate-500">/ month</span></h3>
+              <h3 className="mt-3 text-2xl font-semibold text-slate-950">Pricing to be announced</h3>
               <ul className="mt-6 space-y-3">
                 {proFeatures.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 text-sm leading-6 text-slate-700">
@@ -495,10 +496,13 @@ export function HomePageClient() {
                   </li>
                 ))}
               </ul>
-              <button type="button" disabled className="mt-7 inline-flex cursor-not-allowed items-center justify-center rounded-md bg-slate-300 px-5 py-3 text-sm font-semibold text-slate-600">
-                Coming Soon
-              </button>
-              <p className="mt-4 text-sm leading-6 text-slate-600">Sign up free today and we will notify you when Pro launches.</p>
+              <a
+                href={`mailto:${CONTACT_EMAIL}?subject=Notify me — ${APP_NAME} Pro`}
+                className="mt-7 inline-flex items-center justify-center gap-2 rounded-md bg-cyan-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-800"
+              >
+                Notify me
+              </a>
+              <p className="mt-4 text-sm leading-6 text-slate-600">No payment required — we will only email you when Pro launches.</p>
             </article>
           </div>
         </div>
@@ -507,11 +511,11 @@ export function HomePageClient() {
       <section className="bg-slate-950 text-white">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="max-w-3xl">
-            <h2 className="text-3xl font-semibold tracking-normal sm:text-4xl">Generate your first requirement document in 10 seconds.</h2>
+            <h2 className="text-3xl font-semibold tracking-normal sm:text-4xl">Get instant AI feedback on your first practice requirement.</h2>
             <p className="mt-4 text-base leading-7 text-slate-300">Free. No credit card. No setup. Just paste a requirement and see what happens.</p>
           </div>
           <Link href="/dashboard" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-cyan-200">
-            Start Generating Free →
+            Start Practicing Free →
           </Link>
         </div>
       </section>
@@ -520,9 +524,9 @@ export function HomePageClient() {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <BrandLogo size="sm" theme="dark" href={null} mark={{ src: "/logo.svg", height: 26 }} className="opacity-90" />
+              <BrandLogo size="sm" theme="dark" href={null} />
               <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.45)", marginTop: "8px" }}>
-                sambeet09m15@gmail.com
+                {CONTACT_EMAIL}
               </p>
             </div>
             <p className="text-sm text-slate-400">© 2025 {APP_NAME}. All rights reserved.</p>
@@ -531,15 +535,6 @@ export function HomePageClient() {
             <a href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Privacy Policy</a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
             <a href="/terms" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Terms of Service</a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
-            <a href="/refund" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Refund Policy</a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}> · </span>
-            <a
-              href={`mailto:sambeet09m15@gmail.com?subject=Refund Request - ${APP_NAME}&body=Hi, I would like to request a refund. My registered email is:`}
-              style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}
-            >
-              Request Refund or Cancellation
-            </a>
           </div>
         </div>
       </footer>
