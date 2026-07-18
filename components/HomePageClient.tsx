@@ -1,9 +1,10 @@
 "use client";
 
-import { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { BrandLogo } from "@/components/BrandLogo";
+import { LiveDemo } from "@/components/LiveDemo";
 import { APP_NAME } from "@/lib/brand";
 import {
   ArrowRight,
@@ -359,87 +360,7 @@ export function HomePageClient() {
           </div>
 
           <div className="flex items-end">
-            <div style={{
-              background: 'rgba(10,18,35,0.92)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 0 0 1px rgba(13,148,136,0.15), 0 24px 60px rgba(0,0,0,0.6)',
-              maxWidth: '500px',
-              width: '100%',
-            }}>
-              {/* Card top bar */}
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '7px 13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                <span style={{ fontSize: '9.9px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '1px' }}>LIVE PREVIEW</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ fontSize: '9.9px', color: 'rgba(255,255,255,0.4)' }}>Requirement Quality</span>
-                  {[{ bg: '#16a34a' }, { bg: '#16a34a' }, { bg: '#d97706' }, { bg: '#d97706' }, { bg: '#dc2626' }].map((d, i) => (
-                    <div key={i} style={{ width: '7px', height: '7px', borderRadius: '50%', background: d.bg }} />
-                  ))}
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#d97706', marginLeft: '2px' }}>65%</span>
-                </div>
-              </div>
-
-              {/* Card body */}
-              <div style={{ padding: '10px 13px' }}>
-
-                {/* Raw requirement */}
-                <div style={{ background: 'rgba(255,255,255,0.04)', borderLeft: '3px solid #d97706', borderRadius: '6px', padding: '7px 9px', marginBottom: '7px' }}>
-                  <div style={{ fontSize: '8.8px', color: '#d97706', fontWeight: 700, letterSpacing: '0.5px', marginBottom: '3px' }}>RAW REQUIREMENT</div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', marginBottom: '5px', lineHeight: 1.4 }}>&quot;Operations team must be notified when a delivery is delayed.&quot;</div>
-                  <div style={{ display: 'flex', gap: '3px', flexWrap: 'wrap' }}>
-                    {[
-                      { label: '✓ Actor', bg: 'rgba(22,163,74,0.2)', color: '#4ade80' },
-                      { label: '✓ Trigger', bg: 'rgba(22,163,74,0.2)', color: '#4ade80' },
-                      { label: '✗ Channel?', bg: 'rgba(220,38,38,0.2)', color: '#f87171' },
-                      { label: '✗ Threshold?', bg: 'rgba(220,38,38,0.2)', color: '#f87171' },
-                      { label: '△ Frequency?', bg: 'rgba(217,119,6,0.2)', color: '#fbbf24' },
-                    ].map((c) => (
-                      <span key={c.label} style={{ fontSize: '8.8px', background: c.bg, color: c.color, borderRadius: '3px', padding: '1px 5px', fontWeight: 600 }}>{c.label}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Arrow */}
-                <div style={{ textAlign: 'center', fontSize: '9.9px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>{APP_NAME} generates ↓</div>
-
-                {/* 3x2 grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px', marginBottom: '6px' }}>
-                  {[
-                    { label: 'USER STORY', color: '#0d9488', text: 'As an ops coordinator, I want delay alerts to act first.' },
-                    { label: 'ACCEPTANCE CRITERIA', color: '#0d9488', text: 'Given delay >2hrs, When detected, Then alert in 5 min' },
-                    { label: 'RISKS', color: '#dc2626', text: '⚠ Threshold undefined in system' },
-                    { label: 'TEST SCENARIO', color: '#16a34a', text: '✓ 2hr 01min → alert fires' },
-                    { label: 'STAKEHOLDER QUESTION', color: '#d97706', text: '? Email, SMS or in-app?' },
-                    { label: 'TRACEABILITY', color: '#0d9488', text: 'Story → Criteria → UAT' },
-                  ].map((cell) => (
-                    <div key={cell.label} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '5px', padding: '6px 7px' }}>
-                      <div style={{ fontSize: '8.8px', color: cell.color, fontWeight: 700, marginBottom: '2px' }}>{cell.label}</div>
-                      <div style={{ fontSize: '9.9px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.4 }}>{cell.text}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Dependency Impact */}
-                <div style={{ border: '1px solid rgba(217,119,6,0.35)', borderRadius: '5px', padding: '6px 9px', background: 'rgba(217,119,6,0.07)' }}>
-                  <div style={{ fontSize: '8.8px', color: '#d97706', fontWeight: 700, marginBottom: '4px' }}>⚠ Dependency Impact — If threshold changes:</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'nowrap' }}>
-                    {['REQ-012', '3 Acceptance Criteria', '2 Test Scenarios', 'UAT Sign-off'].map((tag, i, arr) => (
-                      <Fragment key={tag}>
-                        <span style={{ fontSize: '8.8px', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '3px', padding: '1px 5px', color: 'rgba(255,255,255,0.65)', whiteSpace: 'nowrap' }}>{tag}</span>
-                        {i < arr.length - 1 && <span style={{ fontSize: '9.9px', color: 'rgba(255,255,255,0.25)' }}>→</span>}
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Card footer */}
-              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '5px 13px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '9.9px', color: 'rgba(255,255,255,0.2)' }}>6 of 10 sections shown</span>
-                <a href="/dashboard" style={{ fontSize: '9.9px', color: '#0d9488', textDecoration: 'none' }}>Generate full package →</a>
-              </div>
-            </div>
+            <LiveDemo />
           </div>
         </div>
       </section>

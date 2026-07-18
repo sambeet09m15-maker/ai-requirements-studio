@@ -25,8 +25,6 @@ export type GeneratePayload = {
   documentType: DocumentType;
   section?: keyof RequirementsResult;
 };
-export type QualityCriterionStatus = "present" | "partial" | "missing";
-export type RawQualityCriterion = { name?: unknown; status?: unknown; note?: unknown };
 
 function getClient() {
   if (!process.env.OPENAI_API_KEY) {
@@ -100,21 +98,4 @@ export async function generateRequirements(payload: GeneratePayload): Promise<Re
   const user = `Business requirement: ${payload.requirement}`;
   const data = await requestJson(system, user);
   return pickDocumentSections(data, keys);
-}
-
-export async function checkRequirementQualityCriteria(requirement: string): Promise<{ criteria: RawQualityCriterion[] }> {
-  const system = [
-    "You are a senior Business Analyst reviewing a single raw requirement.",
-    "First, decide which quality criteria are RELEVANT to this specific requirement.",
-    "Always include 'Actor' and 'Outcome'.",
-    "Then choose 2 to 5 more from ONLY what genuinely applies, e.g.: Trigger, Channel, Threshold, Frequency, Data Source, Error Handling, Permissions, Performance, Scope.",
-    "Do NOT include criteria that make no sense for this requirement type.",
-    "Return ONLY JSON:",
-    '{"criteria": [{ "name": string, "status": "present"|"partial"|"missing", "note": string (max 12 words, only needed for partial/missing) }]}',
-    "Between 4 and 7 criteria total.",
-    "Judge strictly: 'present' only if explicitly stated in the text, 'partial' if implied or vague, 'missing' if absent.",
-  ].join(" ");
-  const user = `Raw requirement: ${requirement}`;
-  const data = await requestJson(system, user, 0);
-  return { criteria: Array.isArray(data?.criteria) ? data.criteria : [] };
 }
