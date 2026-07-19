@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from "react";
 
 type QualityTag = { label: string; ok: boolean };
 type QualityResult = { score: number; tags: QualityTag[] };
+type Status = "idle" | "loading" | "ok" | "limit" | "error";
+
+const LIMIT_MESSAGE = "You've used today's 10 free runs — come back tomorrow!";
+const GENERIC_ERROR_MESSAGE = "Could not check quality right now — you can still submit for generation.";
 
 function scoreTextColor(score: number) {
   if (score >= 70) return "text-emerald-600";
@@ -18,10 +22,9 @@ function scoreBarColor(score: number) {
 }
 
 export function QualityIndicator({ requirement, onUsage }: { requirement: string; onUsage?: (runsLeft: number) => void }) {
+  const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<QualityResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -30,52 +33,71 @@ export function QualityIndicator({ requirement, onUsage }: { requirement: string
       const controller = new AbortController();
       abortRef.current = controller;
 
-      setLoading(true);
+      setStatus("loading");
       fetch("/api/quality", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requirement }),
         signal: controller.signal,
       })
-        .then((response) => response.json())
-        .then((data) => {
+        .then(async (response) => {
           if (controller.signal.aborted) return;
-          if (data.error || !Array.isArray(data.tags)) {
-            setHidden(true);
+          const data = await response.json().catch(() => null);
+
+          if (response.status === 429) {
+            setStatus("limit");
             setResult(null);
+            setMessage(data?.message || LIMIT_MESSAGE);
+            onUsage?.(0);
             return;
           }
-          setHidden(false);
+
+          if (!response.ok || !data || data.error || !Array.isArray(data.tags)) {
+            setStatus("error");
+            setResult(null);
+            setMessage(GENERIC_ERROR_MESSAGE);
+            return;
+          }
+
+          setStatus("ok");
           setResult({ score: data.score, tags: data.tags });
-          setHasLoadedOnce(true);
           if (typeof data.runsLeft === "number") onUsage?.(data.runsLeft);
         })
         .catch(() => {
           if (controller.signal.aborted) return;
-          setHidden(true);
+          setStatus("error");
           setResult(null);
-        })
-        .finally(() => {
-          if (controller.signal.aborted) return;
-          setLoading(false);
+          setMessage(GENERIC_ERROR_MESSAGE);
         });
     }, 800);
 
     return () => clearTimeout(timeout);
-  }, [requirement]);
+  }, [requirement, onUsage]);
 
-  if (hidden && !result) return null;
-  if (!result) {
-    if (loading && !hasLoadedOnce) {
-      return <p className="text-xs text-slate-400">Analysing…</p>;
-    }
-    return null;
+  if (status === "idle") return null;
+
+  if (status === "loading" && !result) {
+    return <p className="text-xs text-slate-400">Analysing…</p>;
   }
+
+  if (status === "limit") {
+    return (
+      <div className="rounded-md border border-teal-200 bg-teal-50 p-3 text-xs text-teal-900">
+        <p className="font-semibold">{message}</p>
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return <p className="text-xs text-red-600">{message}</p>;
+  }
+
+  if (!result) return null;
 
   const { score, tags } = result;
 
   return (
-    <div className={`rounded-md border border-slate-200 bg-slate-50 p-3 transition-opacity ${loading ? "opacity-60" : "opacity-100"}`}>
+    <div className={`rounded-md border border-slate-200 bg-slate-50 p-3 transition-opacity ${status === "loading" ? "opacity-60" : "opacity-100"}`}>
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-slate-500">Requirement Quality</span>
         <span className={`text-xs font-semibold ${scoreTextColor(score)}`}>{score}%</span>
