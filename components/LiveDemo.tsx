@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { SignUpButton } from "@clerk/nextjs";
 import { ArrowRight, Check, X } from "lucide-react";
+import { FeedbackWidget } from "@/components/FeedbackWidget";
 
 type Tag = { label: string; ok: boolean };
 type DemoHeader = { score: number; tags: Tag[]; runsLeft: number; type?: string };
@@ -28,6 +29,7 @@ export function LiveDemo() {
   const [tags, setTags] = useState<Tag[] | null>(null);
   const [rewrite, setRewrite] = useState("");
   const [runsLeft, setRunsLeft] = useState<number | null>(null);
+  const [resultId, setResultId] = useState(0);
 
   const animationRef = useRef<number | null>(null);
 
@@ -67,6 +69,7 @@ export function LiveDemo() {
 
     setError(null);
     resetResult();
+    setResultId((id) => id + 1);
     setLoading(true);
     setStreaming(false);
 
@@ -370,6 +373,12 @@ export function LiveDemo() {
                     Sign Up Free <ArrowRight size={13} />
                   </button>
                 </SignUpButton>
+              </div>
+            ) : null}
+
+            {!streaming ? (
+              <div style={{ marginTop: "12px" }}>
+                <FeedbackWidget key={resultId} source="demo" variant="dark" />
               </div>
             ) : null}
           </div>

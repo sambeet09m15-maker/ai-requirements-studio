@@ -6,6 +6,7 @@ import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { BrandLogo } from "@/components/BrandLogo";
 import { LiveDemo } from "@/components/LiveDemo";
 import { APP_NAME, CONTACT_EMAIL } from "@/lib/brand";
+import { conceptMapNodes } from "@/lib/knowledge-hub-enrichment";
 import {
   ArrowRight,
   BookOpenText,
@@ -96,6 +97,19 @@ const features = [
     link: "See how it works →",
     icon: Layers3,
   },
+];
+
+const outputTypes = [
+  "Requirement Quality",
+  "User Story",
+  "Acceptance Criteria",
+  "Functional Req.",
+  "Non-Functional Req.",
+  "Risks",
+  "Assumptions",
+  "Test Scenarios",
+  "Stakeholder Questions",
+  "Traceability Matrix",
 ];
 
 const freeFeatures = [
@@ -283,19 +297,20 @@ export function HomePageClient() {
 
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <ParticleBackground />
-        <div className="relative z-10 mx-auto grid min-h-[640px] max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.04fr_0.96fr] lg:px-8 lg:py-20">
-          <div className="flex flex-col justify-center">
-            {/* Badge */}
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              background: 'rgba(13,148,136,0.1)',
-              border: '1px solid rgba(13,148,136,0.3)',
-              borderRadius: '20px', padding: '4px 12px', marginBottom: '18px'
-            }}>
-              <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#0d9488' }} />
-              <span style={{ fontSize: '11px', color: '#0d9488', fontWeight: 500 }}>
-                Free Learning Tool · Built for BA Students &amp; Professionals
-              </span>
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-y-8 px-4 py-16 sm:px-6 lg:grid-cols-[1.04fr_0.96fr] lg:gap-x-10 lg:px-8 lg:py-20">
+          <div className="flex flex-col justify-center lg:[grid-column:1] lg:[grid-row:1]">
+            {/* Feature chips */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '18px' }}>
+              <a href="/concept-map" style={{
+                display: 'inline-flex', alignItems: 'center',
+                background: 'rgba(168,85,247,0.12)',
+                border: '1px solid rgba(168,85,247,0.35)',
+                borderRadius: '999px', padding: '5px 12px',
+                fontSize: '11.5px', color: '#d8b4fe', fontWeight: 500,
+                textDecoration: 'none',
+              }}>
+                {conceptMapNodes.length} BA Concepts Mapped to SDLC
+              </a>
             </div>
 
             {/* H1 */}
@@ -307,8 +322,8 @@ export function HomePageClient() {
               letterSpacing: '-1px',
               marginBottom: '14px',
             }}>
-              Practice writing requirements<br />
-              <span style={{ color: '#0d9488' }}>like a senior BA.</span>
+              AI-Powered Business Analyst<br />
+              <span style={{ color: '#0d9488' }}>Skill-Building Platform</span>
             </h1>
 
             {/* Subtitle */}
@@ -323,9 +338,31 @@ export function HomePageClient() {
               gap analysis, and a suggested rewrite. Built for skill-building and
               interview preparation, free to use.
             </p>
+          </div>
 
+          <div className="flex items-center lg:[grid-column:2] lg:[grid-row:1]">
+            <LiveDemo />
+          </div>
+
+          <div className="lg:[grid-column:1/-1] lg:[grid-row:2]">
+            <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.4)', marginBottom: '12px' }}>
+              WHAT YOU GET FROM ONE REQUIREMENT
+            </p>
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+              {outputTypes.map((type) => (
+                <div
+                  key={type}
+                  className="flex h-[68px] items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] p-3 text-center"
+                >
+                  <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.8)', lineHeight: 1.4 }}>{type}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8 lg:mt-0 lg:[grid-column:1] lg:[grid-row:3]">
             {/* Buttons */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '28px' }}>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '28px', flexWrap: 'wrap' }}>
               <a href="/dashboard" style={{
                 background: '#0d9488', color: 'white', fontSize: '14px', fontWeight: 600,
                 padding: '11px 22px', borderRadius: '8px', textDecoration: 'none',
@@ -342,14 +379,13 @@ export function HomePageClient() {
 
             {/* Stats strip */}
             <div style={{
-              display: 'flex', gap: '24px',
+              display: 'flex', gap: '24px', flexWrap: 'wrap',
               borderTop: '1px solid rgba(255,255,255,0.07)',
               paddingTop: '18px',
             }}>
               {[
                 { num: '10s', label: 'to get AI feedback' },
                 { num: '10', label: 'document types' },
-                { num: '56', label: 'BA concepts to learn' },
                 { num: 'Free', label: 'to practice today' },
               ].map((s) => (
                 <div key={s.num} style={{ textAlign: 'center' }}>
@@ -358,10 +394,6 @@ export function HomePageClient() {
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="flex items-end">
-            <LiveDemo />
           </div>
         </div>
       </section>

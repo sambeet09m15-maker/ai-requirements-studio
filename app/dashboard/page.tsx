@@ -14,10 +14,20 @@ import { HistoryPanel } from "@/components/HistoryPanel";
 import { OnboardingTour, replayTour } from "@/components/OnboardingTour";
 import { WorkspaceList } from "@/components/WorkspaceList";
 import { BrandLogo } from "@/components/BrandLogo";
+import { FeedbackWidget } from "@/components/FeedbackWidget";
 import { APP_NAME } from "@/lib/brand";
 import { saveHistoryEntry, type AnalysisHistoryEntry } from "@/lib/historyStorage";
 import { DEFAULT_WORKSPACE } from "@/lib/workspaceStorage";
 import type { DocumentType, GeneratePayload, RequirementsResult } from "@/lib/llm";
+
+// Purely a client-side display flag for when to surface the feedback widget
+// (once per calendar day, after the first successful result). Kept entirely
+// separate from Clerk's daily AI-run usage limit — it never affects quota.
+const FEEDBACK_WIDGET_LAST_SHOWN_KEY = "ba_feedback_widget_last_shown_date";
+
+function todayDateString() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 export default function Home() {
   const [result, setResult] = useState<RequirementsResult | null>(null);
@@ -32,6 +42,7 @@ export default function Home() {
   const [selectedWorkspace, setSelectedWorkspace] = useState(DEFAULT_WORKSPACE);
   const [restoredPayload, setRestoredPayload] = useState<GeneratePayload | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const outputRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
 
@@ -76,6 +87,15 @@ export default function Home() {
       setSelectedWorkspace(payload.workspace || DEFAULT_WORKSPACE);
       saveHistoryEntry({ payload, result: data.requirements });
       setActiveTab(Object.keys(data.requirements || {})[0]);
+
+      const today = todayDateString();
+      const lastShown = localStorage.getItem(FEEDBACK_WIDGET_LAST_SHOWN_KEY);
+      if (lastShown !== today) {
+        localStorage.setItem(FEEDBACK_WIDGET_LAST_SHOWN_KEY, today);
+        setShowFeedback(true);
+      } else {
+        setShowFeedback(false);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Generation failed.");
     } finally {
@@ -292,6 +312,11 @@ export default function Home() {
                     onRegenerate={regenerateSection}
                   />
                 )}
+                {!loading && result && showFeedback ? (
+                  <div className="mt-4">
+                    <FeedbackWidget source="dashboard" />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
