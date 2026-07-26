@@ -27,10 +27,12 @@ export default function ProfilePage() {
     }
   }, [isLoaded, isSignedIn, router]);
 
+  const userId = user?.id ?? "anonymous";
+
   useEffect(() => {
     function refresh() {
-      setDocumentsSaved(readHistory().length);
-      setWorkspaceCount(readWorkspaces().length);
+      setDocumentsSaved(readHistory(userId).length);
+      setWorkspaceCount(readWorkspaces(userId).length);
     }
 
     refresh();
@@ -42,7 +44,7 @@ export default function ProfilePage() {
       window.removeEventListener("ba-workspaces-changed", refresh);
       window.removeEventListener("storage", refresh);
     };
-  }, []);
+  }, [userId]);
 
   async function handleSignOut() {
     await signOut();

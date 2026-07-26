@@ -1,17 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DEFAULT_WORKSPACE, readWorkspaces, saveWorkspace } from "@/lib/workspaceStorage";
 
 const NEW_WORKSPACE_VALUE = "__new_workspace__";
 
 export function WorkspaceSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const { user } = useUser();
+  const userId = user?.id ?? "anonymous";
   const [workspaces, setWorkspaces] = useState<string[]>([DEFAULT_WORKSPACE]);
 
   useEffect(() => {
     function refresh() {
-      setWorkspaces(readWorkspaces());
+      setWorkspaces(readWorkspaces(userId));
     }
 
     refresh();
@@ -21,7 +24,7 @@ export function WorkspaceSelect({ value, onChange }: { value: string; onChange: 
       window.removeEventListener("ba-workspaces-changed", refresh);
       window.removeEventListener("storage", refresh);
     };
-  }, []);
+  }, [userId]);
 
   function handleChange(nextValue: string | null) {
     if (!nextValue) return;
@@ -30,7 +33,7 @@ export function WorkspaceSelect({ value, onChange }: { value: string; onChange: 
       const name = window.prompt("Enter Workspace name");
       if (!name) return;
 
-      const saved = saveWorkspace(name);
+      const saved = saveWorkspace(userId, name);
       setWorkspaces(saved.workspaces);
       onChange(saved.selected);
       return;

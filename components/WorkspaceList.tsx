@@ -2,15 +2,18 @@
 
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_WORKSPACE, readWorkspaces, removeWorkspace } from "@/lib/workspaceStorage";
 
 export function WorkspaceList({ selected, onSelect, onRemove }: { selected: string; onSelect: (workspace: string) => void; onRemove: (workspace: string) => void }) {
+  const { user } = useUser();
+  const userId = user?.id ?? "anonymous";
   const [workspaces, setWorkspaces] = useState<string[]>([DEFAULT_WORKSPACE]);
 
   useEffect(() => {
     function refresh() {
-      setWorkspaces(readWorkspaces());
+      setWorkspaces(readWorkspaces(userId));
     }
 
     refresh();
@@ -20,13 +23,13 @@ export function WorkspaceList({ selected, onSelect, onRemove }: { selected: stri
       window.removeEventListener("ba-workspaces-changed", refresh);
       window.removeEventListener("storage", refresh);
     };
-  }, []);
+  }, [userId]);
 
   function handleRemove(workspace: string) {
     if (workspace === DEFAULT_WORKSPACE) return;
     if (!window.confirm(`Remove Workspace "${workspace}" from the list?`)) return;
 
-    const updated = removeWorkspace(workspace);
+    const updated = removeWorkspace(userId, workspace);
     setWorkspaces(updated);
     onRemove(workspace);
   }

@@ -2,17 +2,20 @@
 
 import { Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { groupHistoryByWorkspace, readHistory, type AnalysisHistoryEntry } from "@/lib/historyStorage";
 
 export function HistoryPanel({ onLoad }: { onLoad: (entry: AnalysisHistoryEntry) => void }) {
+  const { user } = useUser();
+  const userId = user?.id ?? "anonymous";
   const [entries, setEntries] = useState<AnalysisHistoryEntry[]>([]);
   const [selectedEntryId, setSelectedEntryId] = useState("");
   const groups = groupHistoryByWorkspace(entries);
 
   useEffect(() => {
     function refresh() {
-      const nextEntries = readHistory();
+      const nextEntries = readHistory(userId);
       setEntries(nextEntries);
       setSelectedEntryId((current) => (current && nextEntries.some((entry) => entry.id === current) ? current : ""));
     }
@@ -24,7 +27,7 @@ export function HistoryPanel({ onLoad }: { onLoad: (entry: AnalysisHistoryEntry)
       window.removeEventListener("ba-history-changed", refresh);
       window.removeEventListener("storage", refresh);
     };
-  }, []);
+  }, [userId]);
 
   function handleLoad(entryId: string | null) {
     if (!entryId) return;

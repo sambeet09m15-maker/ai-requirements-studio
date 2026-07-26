@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { ArrowRight, CheckCircle2, CircleHelp, Clock3, FileCheck2, FileText, Info, Layers3, Network, ScanSearch, Settings2 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { RequirementForm } from "@/components/RequirementForm";
@@ -23,6 +23,9 @@ import type { DocumentType, GeneratePayload, RequirementsResult } from "@/lib/ll
 // Purely a client-side display flag for when to surface the feedback widget
 // (once per calendar day, after the first successful result). Kept entirely
 // separate from Clerk's daily AI-run usage limit — it never affects quota.
+// Namespaced per user below (localStorage is shared across every account
+// signed into the same browser, otherwise User A rating suppresses the
+// widget for User B too).
 const FEEDBACK_WIDGET_LAST_SHOWN_KEY = "ba_feedback_widget_last_shown_date";
 
 function todayDateString() {
@@ -30,6 +33,8 @@ function todayDateString() {
 }
 
 export default function Home() {
+  const { user } = useUser();
+  const userId = user?.id ?? "anonymous";
   const [result, setResult] = useState<RequirementsResult | null>(null);
   const [lastPayload, setLastPayload] = useState<GeneratePayload | null>(null);
   const [activeTab, setActiveTab] = useState<string | undefined>();
@@ -85,13 +90,14 @@ export default function Home() {
       setResult(data.requirements);
       if (typeof data.runsLeft === "number") setRunsLeft(data.runsLeft);
       setSelectedWorkspace(payload.workspace || DEFAULT_WORKSPACE);
-      saveHistoryEntry({ payload, result: data.requirements });
+      saveHistoryEntry(userId, { payload, result: data.requirements });
       setActiveTab(Object.keys(data.requirements || {})[0]);
 
       const today = todayDateString();
-      const lastShown = localStorage.getItem(FEEDBACK_WIDGET_LAST_SHOWN_KEY);
+      const feedbackShownKey = `${FEEDBACK_WIDGET_LAST_SHOWN_KEY}:${userId}`;
+      const lastShown = localStorage.getItem(feedbackShownKey);
       if (lastShown !== today) {
-        localStorage.setItem(FEEDBACK_WIDGET_LAST_SHOWN_KEY, today);
+        localStorage.setItem(feedbackShownKey, today);
         setShowFeedback(true);
       } else {
         setShowFeedback(false);
