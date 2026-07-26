@@ -302,16 +302,25 @@ export function HomePageClient({ ratingBadge }: { ratingBadge?: ReactNode } = {}
             {/* Feature chips */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '18px' }}>
               <a href="/concept-map" style={{
-                display: 'inline-flex', alignItems: 'center',
+                display: 'inline-flex', alignItems: 'center', flexShrink: 0,
                 background: 'rgba(168,85,247,0.12)',
                 border: '1px solid rgba(168,85,247,0.35)',
                 borderRadius: '999px', padding: '5px 12px',
                 fontSize: '11.5px', color: '#d8b4fe', fontWeight: 500,
-                textDecoration: 'none',
+                textDecoration: 'none', whiteSpace: 'nowrap',
               }}>
                 {conceptMapNodes.length} BA Concepts Mapped to SDLC
               </a>
-              {ratingBadge}
+              <a href="/situation-guide" style={{
+                display: 'inline-flex', alignItems: 'center', flexShrink: 0,
+                background: 'rgba(245,158,11,0.12)',
+                border: '1px solid rgba(245,158,11,0.35)',
+                borderRadius: '999px', padding: '5px 12px',
+                fontSize: '11.5px', color: '#fcd34d', fontWeight: 500,
+                textDecoration: 'none', whiteSpace: 'nowrap',
+              }}>
+                Real Scenario-Based Interview Q&amp;A
+              </a>
             </div>
 
             {/* H1 */}
@@ -342,7 +351,7 @@ export function HomePageClient({ ratingBadge }: { ratingBadge?: ReactNode } = {}
           </div>
 
           <div className="flex items-center lg:[grid-column:2] lg:[grid-row:1]">
-            <LiveDemo />
+            <LiveDemo ratingBadge={ratingBadge} />
           </div>
 
           <div className="lg:[grid-column:1/-1] lg:[grid-row:2]">

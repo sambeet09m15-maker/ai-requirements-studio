@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { SignUpButton } from "@clerk/nextjs";
 import { ArrowRight, Check, X } from "lucide-react";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
@@ -17,7 +17,7 @@ function scoreColor(score: number) {
   return "#dc2626";
 }
 
-export function LiveDemo() {
+export function LiveDemo({ ratingBadge }: { ratingBadge?: ReactNode } = {}) {
   const [requirement, setRequirement] = useState("");
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
@@ -216,19 +216,24 @@ export function LiveDemo() {
           background: "rgba(255,255,255,0.03)",
           padding: "7px 13px",
           display: "flex",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           alignItems: "center",
+          rowGap: "6px",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
         <span style={{ fontSize: "9.9px", color: "rgba(255,255,255,0.3)", fontWeight: 700, letterSpacing: "1px" }}>
           LIVE DEMO
         </span>
-        {runsLeft !== null ? (
-          <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>
-            {runsLeft} free run{runsLeft === 1 ? "" : "s"} left
-          </span>
-        ) : null}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+          {runsLeft !== null ? (
+            <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", whiteSpace: "nowrap" }}>
+              {runsLeft} free run{runsLeft === 1 ? "" : "s"} left
+            </span>
+          ) : null}
+          {ratingBadge}
+        </div>
       </div>
 
       <div style={{ padding: "14px 16px" }}>
