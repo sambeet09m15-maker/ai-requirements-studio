@@ -571,7 +571,7 @@ export function HomePageClient({ ratingBadge }: { ratingBadge?: ReactNode } = {}
                 {CONTACT_EMAIL}
               </p>
             </div>
-            <p className="text-sm text-slate-400">© 2025 {APP_NAME}. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</p>
           </div>
           <div className="flex gap-2 text-sm text-slate-400">
             <a href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", textDecoration: "none" }}>Privacy Policy</a>
