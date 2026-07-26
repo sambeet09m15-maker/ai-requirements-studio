@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/brand";
+import { incrementRatingCounters } from "@/lib/redis";
 
 // Public, unauthenticated route — see middleware.ts, which explicitly excludes
 // this path from Clerk's auth.protect().
@@ -45,6 +46,12 @@ export async function POST(request: NextRequest) {
   if (currentSubmissions >= MAX_DAILY_SUBMISSIONS) {
     return NextResponse.json({ error: "limit" }, { status: 429 });
   }
+
+  // Public aggregate rating data — sum and count only, never the comment —
+  // stored in Redis so the homepage can show a real, live average. Resilient
+  // the same way the Resend send below is: a Redis failure is logged but
+  // never breaks the user-facing success response.
+  await incrementRatingCounters(rating);
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {

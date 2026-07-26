@@ -11,6 +11,10 @@ export const DAILY_LIMIT = 10;
 // visitors. Kept here for visibility only — this module doesn't use it.
 export const DEMO_LIMIT = 3;
 
+// Badge only shows once we have a credible sample size - update this
+// threshold as desired, but never fabricate the underlying numbers.
+export const MIN_RATINGS_TO_SHOW = 5;
+
 type UsageMetadata = { usageDate?: string; usageCount?: number };
 
 function todayKey(): string {

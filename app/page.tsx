@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { HomePageClient } from "@/components/HomePageClient";
+import { RatingBadge } from "@/components/RatingBadge";
 import { APP_NAME, APP_TAGLINE, APP_URL } from "@/lib/brand";
+
+// Forces this page to render per-request rather than at build time. Without
+// this, RatingBadge's Redis read would run once during `next build` and get
+// frozen into static HTML — the opposite of the live, never-fabricated
+// number this badge is required to show.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   // No title override here — inherits the root layout's default title
@@ -12,5 +19,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <HomePageClient />;
+  return <HomePageClient ratingBadge={<RatingBadge />} />;
 }

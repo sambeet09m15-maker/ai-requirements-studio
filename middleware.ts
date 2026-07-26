@@ -12,6 +12,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/public(.*)", // any public API routes
   "/api/demo-quality(.*)", // unauthenticated live demo on the homepage — no sign-up required
   "/api/feedback(.*)", // feedback widget — submitted by signed-out visitors too
+  "/api/ratings-summary(.*)", // public rating average shown on the homepage
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

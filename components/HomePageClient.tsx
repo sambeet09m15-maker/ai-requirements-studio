@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -232,7 +232,7 @@ function ParticleBackground() {
   );
 }
 
-export function HomePageClient() {
+export function HomePageClient({ ratingBadge }: { ratingBadge?: ReactNode } = {}) {
   const { isSignedIn, isLoaded } = useUser();
 
   return (
@@ -311,6 +311,7 @@ export function HomePageClient() {
               }}>
                 {conceptMapNodes.length} BA Concepts Mapped to SDLC
               </a>
+              {ratingBadge}
             </div>
 
             {/* H1 */}
