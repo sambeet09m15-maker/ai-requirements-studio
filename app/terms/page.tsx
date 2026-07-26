@@ -1,8 +1,9 @@
-import { APP_NAME, CONTACT_EMAIL } from "@/lib/brand";
+import { APP_NAME, APP_URL, CONTACT_EMAIL } from "@/lib/brand";
 
 export const metadata = {
   title: "Terms of Service",
   description: `Terms of Service for ${APP_NAME}.`,
+  alternates: { canonical: `${APP_URL}/terms` },
 };
 
 export default function TermsOfService() {

@@ -3,13 +3,30 @@ import Image from "next/image";
 import { ArrowLeft, ScanSearch } from "lucide-react";
 import { RequirementAutopsy } from "@/components/RequirementAutopsy";
 import { BrandLogo } from "@/components/BrandLogo";
-import { APP_URL } from "@/lib/brand";
+import { APP_NAME, APP_URL } from "@/lib/brand";
+
+const TITLE = "Requirement Autopsy — BA Worked Example for Logistics & Supply Chain";
+const DESCRIPTION =
+  "A complete BA worked example: one logistics requirement broken down using Gap Analysis, MoSCoW, INVEST, User Stories, Acceptance Criteria, RACI, and UAT.";
 
 export const metadata = {
-  title: "Requirement Autopsy — BA Worked Example for Logistics & Supply Chain",
-  description:
-    "See a complete Business Analysis worked example: one real logistics requirement broken down through every BA technique — Gap Analysis, MoSCoW, INVEST, User Story, Acceptance Criteria, RACI, and UAT.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: `${APP_URL}/requirement-autopsy` },
+  openGraph: {
+    type: "website",
+    url: `${APP_URL}/requirement-autopsy`,
+    siteName: APP_NAME,
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: TITLE }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RequirementAutopsyPage() {

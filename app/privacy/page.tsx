@@ -1,8 +1,9 @@
-import { APP_NAME } from "@/lib/brand";
+import { APP_NAME, APP_URL } from "@/lib/brand";
 
 export const metadata = {
   title: "Privacy Policy",
   description: `Privacy Policy for ${APP_NAME} - how we collect, use and protect your data.`,
+  alternates: { canonical: `${APP_URL}/privacy` },
 };
 
 export default function PrivacyPolicy() {

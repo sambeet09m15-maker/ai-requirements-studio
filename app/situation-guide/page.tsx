@@ -3,13 +3,30 @@ import Image from "next/image";
 import { ArrowLeft, CircleHelp } from "lucide-react";
 import { SituationGuide } from "@/components/SituationGuide";
 import { BrandLogo } from "@/components/BrandLogo";
-import { APP_URL } from "@/lib/brand";
+import { APP_NAME, APP_URL } from "@/lib/brand";
+
+const TITLE = "BA Situation Guide — Interview Prep & Real Workplace Scenarios";
+const DESCRIPTION =
+  "Scenario-based BA interview prep and practical answers to real workplace situations: vague stakeholders, priority conflicts, Agile ceremonies, and more.";
 
 export const metadata = {
-  title: "BA Situation Guide — What To Do When You Are Stuck",
-  description:
-    "Real Business Analyst questions answered with practical step-by-step guidance. 11 situations covering requirements, stakeholders, Agile ceremonies, and documentation. Your BA guide for mid-project problems.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: `${APP_URL}/situation-guide` },
+  openGraph: {
+    type: "website",
+    url: `${APP_URL}/situation-guide`,
+    siteName: APP_NAME,
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: TITLE }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function SituationGuidePage() {

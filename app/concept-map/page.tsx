@@ -3,13 +3,30 @@ import Image from "next/image";
 import { ArrowLeft, Network } from "lucide-react";
 import { ConceptMap } from "@/components/ConceptMap";
 import { BrandLogo } from "@/components/BrandLogo";
-import { APP_URL } from "@/lib/brand";
+import { APP_NAME, APP_URL } from "@/lib/brand";
+
+const TITLE = "BA Concept Map — Interactive SDLC and Business Analysis Concepts";
+const DESCRIPTION =
+  "Interactive Business Analysis concept map covering 56 BA concepts across 8 SDLC phases, from planning to production support. Click any node to learn more.";
 
 export const metadata = {
-  title: "BA Concept Map — Interactive SDLC and Business Analysis Concepts",
-  description:
-    "Explore an interactive Business Analysis concept map showing all 56 BA concepts across 8 SDLC phases — from Project Planning to Production Support. Click any node to learn more.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: `${APP_URL}/concept-map` },
+  openGraph: {
+    type: "website",
+    url: `${APP_URL}/concept-map`,
+    siteName: APP_NAME,
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: TITLE }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function ConceptMapPage() {
